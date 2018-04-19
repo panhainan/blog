@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心-登录日志</title>
+    <div th:replace="~{fragment/common :: common}"></div>
+</head>
+<body>
+<div th:replace="~{fragment/header :: header}"></div>
+<div class="body-container container" style="margin-top: 20px">
+    <div class="col-sm-2">
+        <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my-logs')}"></ul>
+    </div>
+    <div class="col-sm-10">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">日志记录(共<span th:text="${records.totalElements}"/>条)</div>
+            <div class="panel-body">
+                <div style="min-height: 410px">
+                    <table class="table table-bordered table-responsive" style="text-align: center;margin-bottom: 0">
+                        <tr>
+                            <td>登录时间</td>
+                            <td>登录IP</td>
+                            <td>登录地点</td>
+                        </tr>
+                        <tr th:each="log : ${records}">
+                            <td th:text="${#dates.format(log.logTime,'yyyy-MM-dd HH:mm:ss')}">
+                            </td>
+                            <td th:text="${log.ip}">
+                            </td>
+                            <td th:text="${log.address}==null?'---':${log.address}">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <div th:replace="~{fragment/page :: page(url='/my/logs',hide='1')}">...</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragment/footer :: footer}">...</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心-分类管理</title>
+    <div th:replace="~{fragment/common :: common}"></div>
+</head>
+<body>
+<div th:replace="~{fragment/header :: header}"></div>
+<div class="body-container container" style="margin-top: 20px">
+    <div class="col-sm-2">
+        <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my-categories')}"></ul>
+    </div>
+    <div class="col-sm-10">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">分类管理</div>
+            <div class="panel-body">
+                ...
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragment/footer :: footer}">...</div>
+</body>
+</html>

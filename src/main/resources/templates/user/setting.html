@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心-账户设置</title>
+    <div th:replace="~{fragment/common :: common}"></div>
+</head>
+<body>
+<div th:replace="~{fragment/header :: header}"></div>
+<div class="body-container container" style="margin-top: 20px">
+    <div class="col-sm-2">
+        <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my-setting')}"></ul>
+    </div>
+    <div class="col-sm-10">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">修改密码</div>
+            <div class="panel-body">
+                <form action="/my/setting" class="col-sm-6" method="post" th:action="@{/my/setting}">
+                    <div class="input-group">
+                        <span class="input-group-addon">原　密　码</span>
+                        <input name="password" type="password"  class="form-control"
+                               placeholder="old password" />
+                    </div>
+                    <br/>
+                    <div  class="input-group">
+                        <span class="input-group-addon" >新　密　码</span>
+                        <input  name="newPassword" type="password" class="form-control"
+                               placeholder="new password" />
+
+                    </div>
+                    <br/>
+                    <div class="input-group">
+                        <span class="input-group-addon">重复新密码</span>
+                        <input  name="repeatNewPassword" type="password"  class="form-control"
+                               placeholder="repeat new password" />
+                    </div>
+                    <br/>
+                    <input type="submit" class="btn btn-danger" value="确认修改">
+                    <br>
+                    <p style="color:red" th:text="${errorMsg}"></p>
+                    <p style="color:green" th:text="${successMsg}"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragment/footer :: footer}">...</div>
+</body>
+</html>

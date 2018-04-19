@@ -1,0 +1,20 @@
+.body-container{
+    margin-bottom: 50px;
+}
+.login,.register {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100PX;
+    width: 20em;
+}
+.nav-pills > li > a {
+    border-radius: 0px;
+}
+
+.nav-stacked > li {
+    border: 1px solid #ddd;
+    text-align: center;
+}
+.panel {
+    border-radius: 0px;
+}
