@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import site.sixteen.blog.entity.User;
 import site.sixteen.blog.entity.UserAuth;
 import site.sixteen.blog.entity.UserLog;
+import site.sixteen.blog.enums.GenerateValidCodeResult;
 import site.sixteen.blog.exception.UserLoginException;
 import site.sixteen.blog.exception.UserPasswordException;
 import site.sixteen.blog.exception.UserRegisterException;
@@ -29,7 +30,8 @@ import site.sixteen.blog.service.UserService;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author panhainan@yeah.net(@link http://sixteen.site)
@@ -48,10 +50,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping({"/index", "/"})
-    public String index() {
-        return "index";
-    }
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -112,9 +110,6 @@ public class UserController {
         return "redirect:/my";
     }
 
-    public void preformLogin() {
-
-    }
 
     @GetMapping("/my")
     public String my(Model model) {
@@ -129,7 +124,6 @@ public class UserController {
         log.info("{}", model);
         return "user/info-edit";
     }
-
 
     @PostMapping("/my/info")
     public String myInfo(@RequestPart(required = false) MultipartFile file, User user, RedirectAttributes redirectAttributes) throws IOException {
@@ -157,6 +151,43 @@ public class UserController {
         return "redirect:/my";
     }
 
+    @GetMapping("/my/email")
+    public String myEmail(Model model) {
+        model.addAttribute("user", userService.getCurrentUser());
+        log.info("{}", model);
+        return "user/email-edit";
+    }
+
+    @PostMapping("/my/email/code")
+    @ResponseBody
+    public Map<String, Object> myEmailValid(String email) {
+        Map<String, Object> map = new HashMap<>(2);
+        if (StringUtils.isEmpty(email)) {
+            map.put("code", GenerateValidCodeResult.FAILED_EMAIL_NULL.value());
+            map.put("msg", GenerateValidCodeResult.FAILED_EMAIL_NULL.msg());
+        } else {
+            GenerateValidCodeResult result = userService.generateEmailValidCode(email);
+            map.put("code", result.value());
+            map.put("msg", result.msg());
+        }
+        return map;
+    }
+
+    @PostMapping("/my/email/valid")
+    public String myEmailValid(String email, String validCode, RedirectAttributes redirectAttributes) {
+        if (StringUtils.isEmpty(email) || StringUtils.isEmpty(validCode)) {
+            redirectAttributes.addFlashAttribute("emailBindSuccessMsg", "邮箱号和验证码都不能为空！");
+        } else {
+            boolean result = userService.validEmailCode(email, validCode);
+            if (result) {
+                redirectAttributes.addFlashAttribute("emailBindSuccessMsg", "邮箱绑定成功！");
+            } else {
+                redirectAttributes.addFlashAttribute("emailBindFailMsg", "邮箱绑定失败！");
+            }
+        }
+        return "redirect:/my";
+    }
+
     @GetMapping("/my/setting")
     public String mySetting() {
         return "user/setting";
@@ -171,10 +202,10 @@ public class UserController {
 
     @GetMapping("/my/logs")
     public String myLogs(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                         @RequestParam(value = "size", defaultValue = "10") Integer size, Model model){
-        Pageable pageable = new PageRequest(page-1, size);
+                         @RequestParam(value = "size", defaultValue = "10") Integer size, Model model) {
+        Pageable pageable = new PageRequest(page - 1, size);
         Page<UserLog> logs = userService.getMyLogs(pageable);
-        model.addAttribute("records",logs);
+        model.addAttribute("records", logs);
         return "user/logs";
     }
 

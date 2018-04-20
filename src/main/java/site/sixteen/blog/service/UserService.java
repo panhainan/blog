@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import site.sixteen.blog.entity.User;
 import site.sixteen.blog.entity.UserAuth;
 import site.sixteen.blog.entity.UserLog;
+import site.sixteen.blog.enums.GenerateValidCodeResult;
 import site.sixteen.blog.exception.UserPasswordException;
 import site.sixteen.blog.exception.UserRegisterException;
 
@@ -70,4 +71,19 @@ public interface UserService {
      * @return
      */
     Page<UserLog> getMyLogs(Pageable pageable);
+
+    /**
+     * 生成邮箱验证码并发送邮箱验证码给用户
+     * @param email
+     * @return
+     */
+    GenerateValidCodeResult generateEmailValidCode(String email);
+
+    /**
+     * 检查验证码是否正确有效
+     * @param email
+     * @param validCode
+     * @return
+     */
+    boolean validEmailCode(String email, String validCode);
 }

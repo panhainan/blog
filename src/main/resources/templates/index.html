@@ -8,95 +8,67 @@
 <div th:replace="~{fragment/header :: header}"></div>
 <!-- Page Content -->
 <div class="container body-container">
-
-    <div class="row">
-
-        <!-- Blog Entries Column -->
-        <div class="col-md-8">
-
-            <!-- Blog Post -->
-            <div class="card mb-4">
-
-            </div>
-
-            <!-- Blog Post -->
-            <div class="card mb-4">
-
-            </div>
-
-            <!-- Blog Post -->
-            <div class="card mb-4">
-
-            </div>
-            <!-- Blog Post -->
-            <div class="card mb-4">
-
-            </div>
-
-            <!-- Pagination -->
-            <nav>
-                <ul class="pagination justify-content-center mb-4">
-                    <li class="page-item">
-                        <a href="#" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item active"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
-                    <li class="page-item"><a href="#" class="page-link">6</a></li>
-                    <li class="page-item"><a href="#" class="page-link">7</a></li>
-                    <li class="page-item">
-                        <a href="#" class="page-link" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+    <div class="col-sm-8 index-content">
+        <div class="col-sm-12">
+            <ul class="nav nav-tabs" style="padding-top: 10px;">
+                <li role="presentation" class="active"><a href="#">最新</a></li>
+                <li role="presentation"><a href="#">最热</a></li>
+            </ul>
         </div>
-
-        <!-- 右侧栏目 -->
-        <div class="col-md-4">
-            <div>
-                <!-- 热门标签 -->
-                <div class="card ">
-                    <h5 class="card-header"><i class="fa fa-tags" aria-hidden="true"></i> 热门标签</h5>
-                    <div class="card-block">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Web Design</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Jersey</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">JavaScript</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">CSS</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Java</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Freebies</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Web Design</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Jersey</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">JavaScript</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">CSS</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Java</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Freebies</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Web Design</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Jersey</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">JavaScript</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">CSS</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Java</span></a>
-                                <a href="/blogs?tag=1"> <span class="badge badge-default">Freebies</span></a>
-                            </div>
-                        </div>
-                    </div>
+    </div>
+    <!-- 右侧栏目 -->
+    <div class="col-sm-4 index-sidebar">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">温馨提示</div>
+                <div class="panel-body">
                 </div>
-
-
-                <!-- 热门文章 -->
-                <div class="card my-4">
-                    <h5 class="card-header"><i class="fa fa-fire" aria-hidden="true"></i> 热门文章</h5>
-
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">活跃用户</div>
+                <div class="panel-body">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">热门标签</div>
+                <div class="panel-body">
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Web Design</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Jersey</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">JavaScript</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">CSS</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Java</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Freebies</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Web Design</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Jersey</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">JavaScript</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">CSS</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Java</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Freebies</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Web Design</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Jersey</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">JavaScript</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">CSS</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Java</span></a>
+                    <a href="/blogs?tag=1"> <span class="badge badge-default">Freebies</span></a>
+                </div>
+            </div>
+        </div>
+        <!--<div class="col-sm-12">
+            <div class="panel panel-default">
+                &lt;!&ndash; Default panel contents &ndash;&gt;
+                <div class="panel-heading">热门文章</div>
+                <div class="panel-body">
                     <ul class="list-group">
                         <a href="/u/waylau/blogs/1" class="list-group-item" title="waylau">
-                            Spring Data + Thymeleaf 3 + Bootstrap 4 实现分页器<span class="badge badge-danger badge-pill">11115</span>
+                            Spring Data + Thymeleaf 3 + Bootstrap 4 实现分页器<span
+                                class="badge badge-danger badge-pill">11115</span>
                         </a>
                         <a href="/u/waylau/blogs/1" class="list-group-item" title="waylau">
                             用大白话聊聊分布式系统<span class="badge badge-warning badge-pill">338</span>
@@ -112,24 +84,11 @@
                             使用 Eclipse Checkstyle Plugin<span class="badge badge-default badge-pill">189</span>
                         </a>
                     </ul>
-
-                </div>
-
-                <!-- 最新发布 -->
-                <div class="card my-4">
-                    <h5 class="card-header"><i class="fa fa-line-chart" aria-hidden="true"></i> 最新发布</h5>
-                    <div class="list-group">
-                    </div>
-
                 </div>
             </div>
-        </div>
-
+        </div>-->
     </div>
-    <!-- /.row -->
-
 </div>
-<!-- /.container -->
 
 
 <div th:replace="~{fragment/footer :: footer}">...</div>

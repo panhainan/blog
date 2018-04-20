@@ -47,6 +47,18 @@ spring:
       - classpath:/static/
       - classpath:/public/
       - file:${web.upload-path}
+  #smtp.qq.com
+  mail:
+    host: smtp.163.com
+    username: baxiastudio@163.com
+    password: jiaYOU16
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            nable: true
+            required: true
 filterLoginUrl: /login
 logging:
   pattern:

@@ -2,7 +2,7 @@
 	 xmlns:th="http://www.thymeleaf.org">
  
 	<!-- 处理页数小于等于7 的情况 -->
-	<ul class="pagination" data-th-if="${records.totalPages le 7}" style="margin: 5px 0">
+	<ul class="pagination" data-th-if="${records.totalPages le 7}" >
 		<!-- 上一页 -->
 		<li class="page-item">
 			<a th:if="${not records.first}" th:href="@{${url}+'?page='+${records.number}}">
@@ -29,7 +29,7 @@
 	</ul>
 		
 	<!-- 处理页数大于7 的情况 -->	
-	<ul class="pagination" data-th-if="${records.totalPages gt 7}"  style="margin: 5px 0">
+	<ul class="pagination" data-th-if="${records.totalPages gt 7}"  >
 		<!-- 上一页 -->
 		<li class="page-item">
 			<a th:if="${not records.first}" th:href="@{${url}+'?page='+${records.number}}">

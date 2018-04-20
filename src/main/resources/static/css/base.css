@@ -1,20 +1,95 @@
-.body-container{
-    margin-bottom: 50px;
+body{
+    font-family: 微软雅黑;
+    background-color: #F2F2F2;
 }
+.container{
+    padding-left: 0;
+    padding-right: 0;
+}
+.body-container{
+    min-height: 600px;
+    margin-bottom: 20px;
+}
+
+.index-content{
+    margin-top: 20px;
+    min-height: 600px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.index-content .col-sm-12{
+    background-color: #ffffff;
+    min-height: 600px;
+}
+.index-sidebar{
+    margin-top: 20px;
+    padding-right: 10px;
+    padding-left: 10px;
+
+}
+.index-sidebar .col-sm-12{
+    padding: 0;
+}
+.index-sidebar .panel {
+    border:0;
+    border-radius: 0px;
+    padding: 10px;
+}
+
+.index-sidebar .panel-default>.panel-heading{
+    background-color: #ffffff;
+}
+
+.index-sidebar .panel .panel-body{
+    min-height: 100px;
+}
+/*   个人中心中的配置 */
+.my-nav{
+    height: 600px;
+    background-color: #393D49;
+    padding-left: 0px;
+    padding-right: 0;
+}
+
+.my-nav .nav-pills > li > a {
+    border-radius: 0px;
+}
+
+.my-nav .nav-stacked > li {
+    border-bottom: 1px solid #313640;
+    text-align: center;
+}
+.my-nav .nav-stacked > li a{
+    color: #ffffff;
+}
+.my-nav .nav-stacked > li a:hover{
+    background-color: #4E5465;
+}
+.my-nav .nav-stacked >li.active{
+    /*background-color: #009688;*/
+}
+.my-nav .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
+    /*background-color: #009688;*/
+}
+.my-content{
+    min-height: 600px;
+    background-color: #ffffff;
+    padding-left: 20px;
+}
+.my-content .panel {
+    border:0;
+    border-radius: 0px;
+    padding: 10px 0px;
+}
+.my-content .panel-default>.panel-heading{
+    background-color: #ffffff;
+}
+
+
+/* 登录注册的配置 */
 .login,.register {
     margin-left: auto;
     margin-right: auto;
     margin-top: 100PX;
     width: 20em;
-}
-.nav-pills > li > a {
-    border-radius: 0px;
-}
-
-.nav-stacked > li {
-    border: 1px solid #ddd;
-    text-align: center;
-}
-.panel {
-    border-radius: 0px;
 }

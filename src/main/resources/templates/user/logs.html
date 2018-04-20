@@ -8,10 +8,10 @@
 <body>
 <div th:replace="~{fragment/header :: header}"></div>
 <div class="body-container container" style="margin-top: 20px">
-    <div class="col-sm-2">
+    <div class="col-sm-2 my-nav">
         <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my-logs')}"></ul>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-10 my-content">
         <div class="panel panel-default">
             <!-- Default panel contents -->
             <div class="panel-heading">日志记录(共<span th:text="${records.totalElements}"/>条)</div>

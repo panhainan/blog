@@ -8,15 +8,16 @@
 <body>
 <div th:replace="~{fragment/header :: header}"></div>
 <div class="body-container container" style="margin-top: 20px">
-    <div class="col-sm-2">
+    <div class="col-sm-2 my-nav">
         <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my-setting')}"></ul>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-10 my-content">
         <div class="panel panel-default">
             <!-- Default panel contents -->
             <div class="panel-heading">修改密码</div>
             <div class="panel-body">
                 <form action="/my/setting" class="col-sm-6" method="post" th:action="@{/my/setting}">
+                    <br>
                     <div class="input-group">
                         <span class="input-group-addon">原　密　码</span>
                         <input name="password" type="password"  class="form-control"

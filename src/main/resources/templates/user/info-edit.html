@@ -8,14 +8,15 @@
 <body>
 <div th:replace="~{fragment/header :: header}"></div>
 <div class="body-container container" style="margin-top: 20px">
-    <div class="col-sm-2">
+    <div class="col-sm-2 my-nav">
         <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my')}"></ul>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-10 my-content">
         <div class="panel panel-default">
             <!-- Default panel contents -->
             <div class="panel-heading">基本资料</div>
             <div class="panel-body">
+                <br>
                 <form action="/my/info" method="post" enctype="multipart/form-data">
                     <div class="col-sm-6">
                         <div class="input-group">
@@ -46,10 +47,10 @@
                             <input  type="text" name="mobile" maxlength="16" th:value="${user.mobile}" class="form-control"/>
                         </div>
                         <br>
-                        <div class="input-group">
+                       <!-- <div class="input-group">
                             <span class="input-group-addon">邮箱号</span>
                             <input type="email" name="email" th:value="${user.email}" class="form-control"/>
-                        </div>
+                        </div>-->
                         <br>
                     </div>
                     <div class="col-sm-6">

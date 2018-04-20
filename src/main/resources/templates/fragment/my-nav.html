@@ -1,8 +1,10 @@
-<ul  class="nav nav-pills nav-stacked"  data-th-fragment="my-nav" xmlns:th="http://www.thymeleaf.org">
-    <li role="presentation" class="active" th:class="${activeUrl=='my'?'active':''}"><a href="/my" th:href="@{/my}">个人中心</a></li>
-    <li role="presentation"  th:class="${activeUrl=='my-setting'?'active':''}"><a href="/my/setting" th:href="@{/my/setting}">账号设置</a></li>
-    <li role="presentation"  th:class="${activeUrl=='my-articles'?'active':''}"><a href="/my/articles" th:href="@{/my/articles}">文章管理</a></li>
-    <li role="presentation"  th:class="${activeUrl=='my-categories'?'active':''}"><a href="/my/categories" th:href="@{/my/categories}" >分类管理</a></li>
-    <li role="presentation"  th:class="${activeUrl=='my-comments'?'active':''}"><a href="/my/comments" th:href="@{/my/comments}">评论管理</a></li>
-    <li role="presentation"  th:class="${activeUrl=='my-logs'?'active':''}"><a href="/my/logs" th:href="@{/my/logs}">登录日志</a></li>
+<div  data-th-fragment="my-nav">
+<ul  class="nav nav-pills nav-stacked"  style="padding-top: 5px" >
+    <li role="presentation" class="active" data-th-class="${activeUrl=='my'?'active':''}"><a href="/my" data-th-href="@{/my}">个 人 中 心&emsp;</a></li>
+    <li role="presentation"  data-th-class="${activeUrl=='my-setting'?'active':''}"><a href="/my/setting" data-th-href="@{/my/setting}">账 号 设 置&emsp;</a></li>
+    <li role="presentation"  data-th-class="${activeUrl=='my-articles'?'active':''}"><a href="/my/articles" data-th-href="@{/my/articles}">文 章 管 理&emsp;</a></li>
+    <li role="presentation"  data-th-class="${activeUrl=='my-categories'?'active':''}"><a href="/my/categories" data-th-href="@{/my/categories}" >分 类 管 理&emsp;</a></li>
+    <li role="presentation"  data-th-class="${activeUrl=='my-comments'?'active':''}"><a href="/my/comments" data-th-href="@{/my/comments}">评 论 管 理&emsp;</a></li>
+    <li role="presentation"  data-th-class="${activeUrl=='my-logs'?'active':''}"><a href="/my/logs" data-th-href="@{/my/logs}">登 录 日 志&emsp;</a></li>
 </ul>
+</div>
