@@ -17,9 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import site.sixteen.blog.entity.User;
-import site.sixteen.blog.entity.UserAuth;
-import site.sixteen.blog.entity.UserLog;
+import site.sixteen.blog.entity.*;
 import site.sixteen.blog.enums.GenerateValidCodeResult;
 import site.sixteen.blog.exception.UserLoginException;
 import site.sixteen.blog.exception.UserPasswordException;
@@ -31,6 +29,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -220,10 +219,43 @@ public class UserController {
     }
 
     @GetMapping("/my/categories")
-    public String myCategories() {
+    public String myCategories(Model model) {
+        List<Category> categoryList = userService.getMyCategories();
+        model.addAttribute("categoryList", categoryList);
         return "user/categories";
     }
 
+    @GetMapping("/my/category/{id}")
+    @ResponseBody
+    public List<Article> myCategoryArticles(@PathVariable long id) {
+        return userService.getMyCategoryArticles(id);
+    }
+
+    @PostMapping("/my/category")
+    public String saveOrUpdateMyCategory(@Valid Category category, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        boolean result;
+        if (bindingResult.hasErrors()) {
+            result = false;
+        } else {
+            result = userService.saveOrUpdateMyCategory(category);
+        }
+        if (result) {
+            redirectAttributes.addFlashAttribute("code", 1);
+            redirectAttributes.addFlashAttribute("msg", "操作成功！");
+        } else {
+            redirectAttributes.addFlashAttribute("code", 0);
+            redirectAttributes.addFlashAttribute("msg", "操作失败！");
+        }
+
+        return "redirect:/my/categories";
+    }
+
+    @DeleteMapping("/my/category/{id}")
+    @ResponseBody
+    public Boolean deleteMyCategory(@PathVariable long id){
+        log.info("{}",id);
+        return userService.deleteMyCategory(id);
+    }
     @GetMapping("/logout")
     public String logout(RedirectAttributes redirectAttributes) {
         //使用权限管理工具进行用户的退出，跳出登录，给出提示信息

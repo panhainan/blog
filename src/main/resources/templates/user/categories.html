@@ -14,13 +14,164 @@
     <div class="col-sm-10 my-content">
         <div class="panel panel-default">
             <!-- Default panel contents -->
-            <div class="panel-heading">分类管理</div>
+            <div class="panel-heading">
+                <h4>分类管理
+                    <button class="btn btn-sm btn-success" data-toggle="modal" onclick="setNewOrEdit('new')"
+                            data-target=".bs-example-modal-sm">新建分类
+                    </button>
+                    <span data-th-if="${code==0}" style="color: red;font-size: 14px;" data-th-text="${msg}"></span>
+                    <span data-th-if="${code==1}" style="color: green;font-size: 14px;" data-th-text="${msg}"></span>
+                    <span style="color: red;font-size: 14px;" id="errorMsg"></span>
+                </h4>
+            </div>
             <div class="panel-body">
-                ...
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default" data-th-each="category : ${categoryList}">
+                        <div class="panel-heading" style="height: 40px" role="tab"
+                             data-th-id="'#heading'+${category.id}">
+                            <h4 class="panel-title" role="button" data-toggle="collapse" data-parent="#accordion"
+                                data-th-href="'#collapse'+${category.id}" aria-expanded="true"
+                                data-th-attr="aria-controls='collapse'+${category.id},category-id=${category.id}"
+                                data-th-text="${category.name}" onclick="getCategoryArticles(this)">
+                            </h4>
+                            <a class="btn btn-xs btn-danger"
+                               data-toggle="modal" data-target=".bs-example-modal-sm-delete"
+                               style="color: #ffffff;float: right;margin-top: -15px;"
+                               data-th-onclick="'javascript:setDelete(\''+${category.name}+'\',\''+${category.id}+'\');'"
+                               href="">删除</a>
+                            <a class="btn btn-xs btn-primary"
+                               style="color: #ffffff;float: right;margin-top: -15px;margin-right: 20px"
+                               data-toggle="modal" data-target=".bs-example-modal-sm"
+                               data-th-onclick="'javascript:setNewOrEdit(\'edit\',\''+${category.id}+'\',\''+${category.name}+'\');'">修改</a>
+                        </div>
+                        <div data-th-id="'collapse'+${category.id}" class="panel-collapse collapse" role="tabpanel"
+                             data-th-attr="aria-labelledby='heading'+${category.id}">
+                            <div class="panel-body">
+                                <ol data-th-id="'articles-ul-'+${category.id}"
+                                    style="margin-bottom: 0;min-height: 20px"></ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form data-th-action="@{/my/category}" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="category-name" class="control-label">类别名称</label>
+                        <input type="text" name="name" required class="form-control" id="category-name">
+                        <input type="hidden" name="id" readonly id="category-id">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">点击保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-sm-delete" tabindex="-1" role="dialog"
+     aria-labelledby="myLargeModalLabelDelete">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myLargeModalLabelDelete">操作确认</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="category-name" class="control-label">确认删除下面的类别吗？</label>
+                    <input type="text" readonly class="form-control" id="category-name-delete">
+                    <input type="hidden" readonly id="category-id-delete">
+                    <label for="category-name" class="control-label">删除后该类别下的文章会转存到默认分类。</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" onclick="deleteCategory()" data-dismiss="modal" class="btn btn-primary btn-danger">确认删除</button>
             </div>
         </div>
     </div>
 </div>
 <div th:replace="~{fragment/footer :: footer}">...</div>
+<script data-th-inline="javascript">
+    function setDelete(categoryName, categoryId) {
+        // console.log(categoryName + ":" + categoryId);
+        $("#category-name-delete").val(categoryName)
+        $("#category-id-delete").val(categoryId)
+    }
+
+    function deleteCategory() {
+        // console.log($("#category-id-delete").val());
+        $.ajax({
+            url: '/my/category/'+$("#category-id-delete").val(),
+            type: 'delete',
+            success: function(result) {
+                // Do something with the result
+                console.log(result)
+                if(result==true){
+                    location.reload(true);
+                }else{
+                    $("#errorMsg").html("操作失败！");
+                }
+            }
+        });
+    }
+
+    function setNewOrEdit(opt, id, name) {
+        // console.log(opt)
+        // console.log(id);
+        // console.log(name)
+        if ('edit' == opt) {
+            $("#category-name").val(name);
+            $("#category-id").val(id);
+            $("#exampleModalLabel").html("编辑分类");
+        } else {
+            $("#category-name").val("");
+            $("#category-id").val("");
+            $("#exampleModalLabel").html("新建分类");
+        }
+    }
+
+    function getCategoryArticles(obj) {
+        var categoryId = $(obj).attr('category-id');
+        var collapseId = $(obj).attr('aria-controls');
+        // console.log(collapseId);
+        var flag = $("#" + collapseId).hasClass('in');
+        // console.log(flag)
+        if (flag) {
+            // console.log("不查询数据")
+            return false;
+        } else {
+            // console.log("查询数据");
+            $.getJSON("/my/category/" + categoryId, function (data) {
+                // console.log(data);
+                var ulId = $("#articles-ul-" + categoryId);
+                $(ulId).html("");
+                if (data.length == 0) {
+                    $(ulId).html("无数据");
+                } else {
+                    $.each(data, function (i, item) {
+                        $(ulId).append("<li><a href='/blog/a/" + item.id + "' target='_blank' title='" + item.summary + "'>" + item.title + "</a></li>")
+                    });
+                }
+            });
+        }
+    }
+</script>
 </body>
 </html>

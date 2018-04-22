@@ -2,12 +2,12 @@ package site.sixteen.blog.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import site.sixteen.blog.entity.User;
-import site.sixteen.blog.entity.UserAuth;
-import site.sixteen.blog.entity.UserLog;
+import site.sixteen.blog.entity.*;
 import site.sixteen.blog.enums.GenerateValidCodeResult;
 import site.sixteen.blog.exception.UserPasswordException;
 import site.sixteen.blog.exception.UserRegisterException;
+
+import java.util.List;
 
 /**
  * @author panhainan@yeah.net(@link http://sixteen.site)
@@ -66,13 +66,6 @@ public interface UserService {
     void logUserLogin(UserLog userLog);
 
     /**
-     * 获取个人登录日志
-     * @param pageable
-     * @return
-     */
-    Page<UserLog> getMyLogs(Pageable pageable);
-
-    /**
      * 生成邮箱验证码并发送邮箱验证码给用户
      * @param email
      * @return
@@ -86,4 +79,38 @@ public interface UserService {
      * @return
      */
     boolean validEmailCode(String email, String validCode);
+
+    /**
+     * 获取我的所有文章类别
+     * @return
+     */
+    List<Category> getMyCategories();
+
+    /**
+     * 创建我的文章类别
+     * @param category
+     * @return
+     */
+    boolean saveOrUpdateMyCategory(Category category);
+
+    /**
+     * 删除我的文章类别
+     * @param categoryId
+     * @return
+     */
+    boolean deleteMyCategory(Long categoryId);
+
+    /**
+     * 获取我的文章类别下的所有文章
+     * @param categoryId
+     * @return
+     */
+    List<Article> getMyCategoryArticles(Long categoryId);
+
+    /**
+     * 获取个人登录日志
+     * @param pageable
+     * @return
+     */
+    Page<UserLog> getMyLogs(Pageable pageable);
 }

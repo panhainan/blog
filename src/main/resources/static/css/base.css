@@ -2,6 +2,9 @@ body{
     font-family: 微软雅黑;
     background-color: #F2F2F2;
 }
+.panel{
+    box-shadow:none;
+}
 .container{
     padding-left: 0;
     padding-right: 0;
@@ -27,7 +30,7 @@ body{
     padding-left: 10px;
 
 }
-.index-sidebar .col-sm-12{
+.index-sidebar  .col-sm-12{
     padding: 0;
 }
 .index-sidebar .panel {
@@ -76,12 +79,12 @@ body{
     background-color: #ffffff;
     padding-left: 20px;
 }
-.my-content .panel {
+.my-content > .panel {
     border:0;
     border-radius: 0px;
     padding: 10px 0px;
 }
-.my-content .panel-default>.panel-heading{
+.my-content > .panel-default>.panel-heading{
     background-color: #ffffff;
 }
 
