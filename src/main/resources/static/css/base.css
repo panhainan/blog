@@ -88,6 +88,12 @@ body{
     background-color: #ffffff;
 }
 
+/* 新建文章 */
+
+.article-form .form-control{
+    border-radius: 0;
+}
+
 
 /* 登录注册的配置 */
 .login,.register {

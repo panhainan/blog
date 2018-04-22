@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新建文章</title>
+    <div data-th-replace="~{fragment/common :: common}"></div>
+</head>
+<body>
+<div data-th-replace="~{fragment/header :: header}"></div>
+<div class="body-container container" style="margin-top: 20px">
+    <div class="col-sm-2 my-nav">
+        <ul data-th-replace="~{fragment/my-nav :: my-nav(activeUrl='my-articles')}"></ul>
+    </div>
+    <div class="col-sm-10 my-content article-form">
+        <br>
+        <div class="form-group">
+            <input type="text" class="form-control"
+                   style="height: 40px;font-size: 16px;" placeholder="输入文章标题   禁止包含 @ 或者 . 等特殊符号" id="articleTitle"
+                   data-th-value="${article != null ? article.title:''}"
+                   name="title" required/>
+        </div>
+        <div class="form-group">
+            <select class="form-control" id="articleCategoryId" name="categoryId">
+                <option value="=0">请选择类别</option>
+                <option data-th-value="${category.id}"
+                        data-th-selected="${article != null ? category.id==article.categoryId:false}"
+                        data-th-each="category : ${categoryList}"
+                        data-th-text="${category.name}"></option>
+
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="tagIdStr" id="articleTagIdStr"
+                   onkeyup="value=this.value.replace('；',';')"
+                   placeholder="输入标签   加 ; 号分割    禁止包含 /    每个标签长度限制10个字符">
+        </div>
+        <div style="border: 1px solid #DDDDDD;min-height: 450px">
+            <div id="editormd" style="margin-bottom: 0;">
+                <textarea style="display:none;" data-th-value="${article != null ? article.content:''}">### 请在这里输入你的正文内容！</textarea>
+            </div>
+        </div>
+        <br>
+        <div class="form-group">
+                <textarea class="form-control" required maxlength="300" minlength="20"
+                          data-th-text="${article != null ? article.summary : ''}"
+                          name="summary" rows="6" style="resize:none" id="articleSummary"
+                          placeholder="请简述文章的摘要（要求20~300字符之间）"></textarea>
+        </div>
+        <div class="form-group">
+            <input type="hidden" id="articleId" data-th-value="${article != null ?  article.id:''}">
+            <button type="button" onclick="setContent(0)"
+                    class="btn btn-warning">存 为 草 稿
+            </button>
+            <button type="button" onclick="setContent(1)"
+                    class="btn btn-success">直 接 发 布
+            </button>
+            <span id="msg"></span>
+        </div>
+    </div>
+</div>
+<div data-th-replace="~{fragment/footer :: footer}">...</div>
+<script data-th-src="@{/plugin/editor.md/editormd.js}"></script>
+<script data-th-inline="javascript">
+    var editor;
+
+    function setContent(status) {
+        $.post("/my/article",
+            {
+                "id": $("#articleId").val(),
+                "title": $("#articleTitle").val(),
+                "categoryId": $("#articleCategoryId").val(),
+                "tagIdStr": $("#articleTagIdStr").val(),
+                "content": editor.getMarkdown(),
+                "summary": $("#articleSummary").val(),
+                "status": status
+            },
+            function (data) {
+                console.log(data);
+                if (data.code == 1) {
+                    $("#msg").html(data.msg);
+                    window.location.href = "/my/articles";
+                } else {
+                    $("#msg").html(data.msg);
+                }
+            }
+        );
+    }
+
+    $(function () {
+        var article = [[${article}]];
+        // console.log(article);
+        if (article != null) {
+            var articleTagIdStr = "";
+            for (var i = 0; i < article.tags.length; i++) {
+                articleTagIdStr += article.tags[i].name + ";";
+            }
+            $("#articleTagIdStr").val(articleTagIdStr);
+        }
+        editor = editormd("editormd", {
+            lineNumbers: false,
+            width: "100%",
+            height: 450,
+            watch: false,
+            path: "/plugin/editor.md/lib/",
+            toolbarIcons: function () {
+                return editormd.toolbarModes["simple"];
+            },
+            onload: function () {
+                if (article != null) {
+                    this.setMarkdown(article.content);
+                } else {
+                    this.setMarkdown("");
+                }
+            },
+
+            saveHTMLToTextarea: true,
+            autoFocus: false,
+            toolbarAutoFixed: false
+        });
+
+
+    });
+</script>
+
+</body>
+</html>

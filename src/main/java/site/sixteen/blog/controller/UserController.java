@@ -209,10 +209,54 @@ public class UserController {
     }
 
     @GetMapping("/my/articles")
-    public String myArticles() {
+    public String myArticles(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                             @RequestParam(value = "size", defaultValue = "10") Integer size, Model model) {
+        Pageable pageable = new PageRequest(page - 1, size);
+        Page<Article> articles = userService.getMyArticles(pageable);
+        model.addAttribute("records", articles);
         return "user/articles";
     }
-
+    @GetMapping("/my/article")
+    public String goNewMyArticle(Model model) {
+        List<Category> categoryList = userService.getMyCategories();
+        model.addAttribute("categoryList", categoryList);
+        return "user/article-new";
+    }
+    @PostMapping("/my/article")
+    @ResponseBody
+    public  Map<String,Object>  newMyArticle(@Valid Article article,BindingResult bindingResult) {
+        Map<String,Object> map=new HashMap<>(1);
+        if(bindingResult.hasErrors()){
+            map.put("code",0);
+            map.put("msg","保存失败，数据不符合要求！");
+        }else{
+            userService.newMyArticle(article);
+            map.put("code",1);
+            map.put("msg","保存成功！");
+        }
+        return map;
+    }
+    @GetMapping("/my/article/update/{id}")
+    public String goUpdateArticle(@PathVariable long id,Model model,RedirectAttributes redirectAttributes) {
+        Article article= userService.getMyArticle(id);
+        if(article==null){
+            redirectAttributes.addFlashAttribute("errorMsg","操作失败，你没有权限");
+            return "redirect:/my/articles";
+        }
+        List<Category> categoryList = userService.getMyCategories();
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("article",article);
+        return "user/article-new";
+    }
+    @GetMapping("/my/article/delete/{id}")
+    public String deleteArticle(@PathVariable long id,Model model,RedirectAttributes redirectAttributes) {
+        if(!userService.deleteMyArticle(id)){
+            redirectAttributes.addFlashAttribute("errorMsg","操作失败，你没有权限");
+        }else{
+            redirectAttributes.addFlashAttribute("successMsg","删除成功！");
+        }
+        return "redirect:/my/articles";
+    }
     @GetMapping("/my/comments")
     public String myComments() {
         return "user/comments";

@@ -22,6 +22,7 @@ import site.sixteen.blog.service.UserService;
 import site.sixteen.blog.util.StringRandom;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,13 +39,15 @@ public class UserServiceImpl implements UserService {
     private static final int IDENTITY_TYPE_QQ = 4;
     private static final int IDENTITY_TYPE_WECHAT = 5;
     private static final int IDENTITY_TYPE_SINA = 6;
-
+    private static final String DEFAULT_CATEGORY_NAME="默认分类";
 
     /**
      * 验证码有效时长
      */
     private static final long VALID_CODE_EFFECTIVE_DURATION = 1000 * 60 * 10L;
 
+    @Autowired
+    private TagRepository tagRepository;
 
     @Autowired
     private UserAuthRepository userAuthRepository;
@@ -91,8 +94,7 @@ public class UserServiceImpl implements UserService {
     public User getCurrentUser() {
         Subject currentSubject = SecurityUtils.getSubject();
         String username = String.valueOf(currentSubject.getPrincipal());
-        User user = getUserByUsername(username);
-        return user;
+        return getUserByUsername(username);
     }
 
     @Override
@@ -129,9 +131,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logUserLogin(UserLog userLog) {
         Subject subject = SecurityUtils.getSubject();
-        if (!subject.isAuthenticated()) {
-            return;
-        } else {
+        if (subject.isAuthenticated()) {
             Session session = subject.getSession(true);
             log.info("{}", session);
             userLog.setUsername(String.valueOf(subject.getPrincipal()));
@@ -146,6 +146,111 @@ public class UserServiceImpl implements UserService {
         Subject subject = SecurityUtils.getSubject();
         String username = String.valueOf(subject.getPrincipal());
         return userLogRepository.findUserLogsByUsernameOrderByLogTimeDesc(username, pageable);
+    }
+
+    @Override
+    public Page<Article> getMyArticles(Pageable pageable) {
+        User user = getCurrentUser();
+        Page<Article> articlePage = articleRepository.findArticlesByUserIdOrderByCreateTimeDesc(user.getId(), pageable);
+        for (Article article : articlePage.getContent()) {
+            Category category = categoryRepository.findOne(article.getCategoryId());
+            article.setCategoryName(category.getName());
+            setArticleTags(article);
+        }
+        return articlePage;
+    }
+
+
+    private void setArticleTags(Article article){
+        if(!StringUtils.isEmpty(article.getTagIdStr())){
+            String[] tagIdArr = article.getTagIdStr().split(";");
+            Tag[] tags = new Tag[tagIdArr.length];
+            for (int i=0;i<tagIdArr.length;i++){
+                Long tagId = Long.valueOf(tagIdArr[i]);
+                tags[i]=tagRepository.findOne(tagId);
+            }
+            article.setTags(tags);
+        }
+    }
+    @Override
+    public void newMyArticle(Article article) {
+        User currentUser = getCurrentUser();
+        String tagIdStr = article.getTagIdStr();
+        //处理标签
+        if(!StringUtils.isEmpty(tagIdStr)){
+            StringBuilder stringBuilder = new StringBuilder();
+            boolean flag = false;
+            String[] tagNames = tagIdStr.split(";");
+            for (String tagName : tagNames){
+                String tagNameTrim = tagName.trim();
+                if(!StringUtils.isEmpty(tagNameTrim)){
+                    Tag dbTag =tagRepository.findTagByName(tagNameTrim);
+                    if(dbTag==null){
+                        dbTag = tagRepository.save(new Tag(tagNameTrim));
+                        stringBuilder.append(dbTag.getId()).append(";");
+                    }else{
+                        if(-1==stringBuilder.indexOf(String.valueOf(dbTag.getId()))){
+                            stringBuilder.append(dbTag.getId()).append(";");
+                        }
+                    }
+                    flag = true;
+                }
+            }
+            String idStr = "";
+            if(flag){
+                idStr= stringBuilder.substring(0,stringBuilder.length()-1);
+            }
+            article.setTagIdStr(idStr);
+        }
+        //处理分类
+        if (article.getCategoryId()==null|| article.getCategoryId()==0){
+            article.setCategoryId(getDefaultCategory(currentUser.getId()));
+        }
+        article.setUserId(currentUser.getId());
+        //处理其他默认信息
+        article.initDefaultInfo();
+        articleRepository.save(article);
+    }
+
+    @Override
+    public Article getMyArticle(long id) {
+        Article article = articleRepository.findOne(id);
+        User user = getCurrentUser();
+        if(user.getId().longValue() == article.getUserId().longValue()){
+            setArticleTags(article);
+            return article;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean deleteMyArticle(long id) {
+        User user = getCurrentUser();
+        Article article = articleRepository.findOne(id);
+        if(user.getId().longValue()==article.getUserId().longValue()){
+            //TODO 需要将其对于的评论也删除掉，前台删除应给出提示
+            articleRepository.delete(id);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 获取当前用户文章默认类别ID，不过不存在则创建
+     * @param userId 当前用户id
+     * @return 默认分类ID
+     */
+    private long getDefaultCategory(long userId){
+        Category category=categoryRepository.findCategoryByNameAndUserId(DEFAULT_CATEGORY_NAME,userId);
+        if(category==null){
+            //当前用户文章类别不存在默认类别
+            category = new Category();
+            category.setUserId(userId);
+            category.setName(DEFAULT_CATEGORY_NAME);
+            category = categoryRepository.save(category);
+        }
+        return category.getId();
     }
 
 
@@ -220,14 +325,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean saveOrUpdateMyCategory(Category category) {
         User currentUser = getCurrentUser();
-        if (category.getId()==null) {
+        if (category.getId() == null) {
             //表示新建
-            if (categoryRepository.existsByNameAndUserId(category.getName(), currentUser.getId())) {
+            if (categoryRepository.existsByNameAndUserId(category.getName().trim(), currentUser.getId())) {
                 return false;
             }
         }
         //表示修改
         category.setUserId(currentUser.getId());
+        category.setName(category.getName().trim());
         categoryRepository.save(category);
         return true;
     }
@@ -236,23 +342,17 @@ public class UserServiceImpl implements UserService {
     public boolean deleteMyCategory(Long categoryId) {
         User currentUser = getCurrentUser();
         Category category = categoryRepository.findCategoryByIdAndUserId(categoryId, currentUser.getId());
-        if (category != null && !category.getName().equals("默认分类")) {
+        if (category != null && !category.getName().equals(DEFAULT_CATEGORY_NAME)) {
+            categoryRepository.delete(categoryId);
             List<Article> list = articleRepository.findArticlesByCategoryId(categoryId);
-            if(list==null || list.size()==0){
-                categoryRepository.delete(categoryId);
-            }else{
-                Category defaultCategory = categoryRepository.findCategoryByName("默认分类");
-                if(defaultCategory==null){
-                    category.setName("默认分类");
-                    categoryRepository.save(category);
-                }else{
-                    for(Article article: list){
-                        article.setCategoryId(defaultCategory.getId());
-                        articleRepository.save(article);
-                    }
-                    categoryRepository.delete(categoryId);
+            if (list != null && list.size() > 0) {
+                long defaultCategoryId = getDefaultCategory(currentUser.getId());
+                for (Article article : list) {
+                    article.setCategoryId(defaultCategoryId);
+                    articleRepository.save(article);
                 }
             }
+            categoryRepository.delete(categoryId);
             return true;
         }
         return false;
@@ -272,16 +372,11 @@ public class UserServiceImpl implements UserService {
     private UserAuth getCurrentUserAuth() {
         Subject currentSubject = SecurityUtils.getSubject();
         String username = String.valueOf(currentSubject.getPrincipal());
-        UserAuth userAuth = getUserAuthByUsername(username);
-        return userAuth;
+        return getUserAuthByUsername(username);
     }
 
     private boolean checkUsernameIsExisted(String username) {
-        UserAuth userAuth = userAuthRepository.findUserAuthByUsername(username);
-        if (userAuth != null) {
-            return true;
-        }
-        return false;
+        return userAuthRepository.findUserAuthByUsername(username)!=null;
     }
 
     @Override

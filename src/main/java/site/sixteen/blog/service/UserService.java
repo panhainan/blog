@@ -113,4 +113,31 @@ public interface UserService {
      * @return
      */
     Page<UserLog> getMyLogs(Pageable pageable);
+
+    /**
+     * 获取我的文章
+     * @param pageable
+     * @return
+     */
+    Page<Article> getMyArticles(Pageable pageable);
+
+    /**
+     * 新建我的文章
+     * @param article
+     */
+    void newMyArticle(Article article);
+
+    /**
+     * 根据ID获取我的文章
+     * @param id
+     * @return
+     */
+    Article getMyArticle(long id);
+
+    /**
+     * 删除指定ID的我的文章
+     * @param id
+     * @return
+     */
+    boolean deleteMyArticle(long id);
 }

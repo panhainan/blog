@@ -1,5 +1,7 @@
 package site.sixteen.blog.entity;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -23,13 +25,17 @@ public class Article {
     @Column(name = "tag_ids")
     private String tagIdStr;
 
+    @NotBlank
     @Column
     private String title;
 
+    @NotBlank
     @Column
     private String summary;
 
-    @Column
+    @NotBlank
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     private String content;
 
     @Column(name = "read_count")
@@ -49,6 +55,40 @@ public class Article {
 
     @Column(name = "update_time")
     private Date updateTime;
+
+    @Transient
+    private String userNicName;
+    @Transient
+    private String categoryName;
+    @Transient
+    private Tag[] tags;
+
+
+    public void initDefaultInfo() {
+        this.readCount=0;
+        this.voteCount=0;
+        this.commentCount=0;
+        this.createTime= new Date();
+    }
+
+    public Article() {
+    }
+
+    public Article(Long id,Long userId, Long categoryId, String tagIdStr, String title, String summary, String content, Integer readCount, Integer commentCount, Integer voteCount, Integer status, Date createTime, Date updateTime) {
+        this.id=id;
+        this.userId = userId;
+        this.categoryId = categoryId;
+        this.tagIdStr = tagIdStr;
+        this.title = title;
+        this.summary = summary;
+        this.content = content;
+        this.readCount = readCount;
+        this.commentCount = commentCount;
+        this.voteCount = voteCount;
+        this.status = status;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+    }
 
     @Override
     public String toString() {
@@ -172,4 +212,30 @@ public class Article {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    public String getUserNicName() {
+        return userNicName;
+    }
+
+    public void setUserNicName(String userNicName) {
+        this.userNicName = userNicName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public Tag[] getTags() {
+        return tags;
+    }
+
+    public void setTags(Tag[] tags) {
+        this.tags = tags;
+    }
+
+
 }

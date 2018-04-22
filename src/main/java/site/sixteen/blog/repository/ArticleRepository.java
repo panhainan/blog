@@ -1,5 +1,7 @@
 package site.sixteen.blog.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import site.sixteen.blog.entity.Article;
 
@@ -15,4 +17,12 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
      * @return
      */
     List<Article> findArticlesByCategoryId(Long categoryId);
+
+    /**
+     * 通过用户id分页查找文章
+     * @param userId
+     * @param pageable
+     * @return
+     */
+    Page<Article> findArticlesByUserIdOrderByCreateTimeDesc(long userId, Pageable pageable);
 }

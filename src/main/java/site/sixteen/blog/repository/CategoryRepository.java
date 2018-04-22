@@ -36,9 +36,11 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     boolean existsByNameAndUserId(String name, Long userId);
 
     /**
-     * 通过类别名称查找类别
+     * 通过类别名称和用户ID查找类别
      * @param name
+     * @param userId
      * @return
      */
-    Category findCategoryByName(String name);
+    Category findCategoryByNameAndUserId(String name,Long userId);
+
 }
