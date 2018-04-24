@@ -38,7 +38,7 @@
                                data-toggle="modal" data-target=".bs-example-modal-sm-delete"
                                style="color: #ffffff;float: right;margin-top: -15px;"
                                data-th-onclick="'javascript:setDelete(\''+${category.name}+'\',\''+${category.id}+'\');'"
-                               href="">删除</a>
+                               >删除</a>
                             <a class="btn btn-xs btn-primary"
                                style="color: #ffffff;float: right;margin-top: -15px;margin-right: 20px"
                                data-toggle="modal" data-target=".bs-example-modal-sm"
@@ -94,10 +94,10 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="category-name" class="control-label">确认删除下面的类别吗？</label>
+                    <label for="category-name-delete" class="control-label">确认删除下面的类别吗？</label>
                     <input type="text" readonly class="form-control" id="category-name-delete">
                     <input type="hidden" readonly id="category-id-delete">
-                    <label for="category-name" class="control-label">删除后该类别下的文章会转存到默认分类。</label>
+                    <label for="category-name-delete" class="control-label">删除后该类别下的文章会转存到无归类文章类别。</label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -166,7 +166,7 @@
                     $(ulId).html("无数据");
                 } else {
                     $.each(data, function (i, item) {
-                        $(ulId).append("<li><a href='/blog/a/" + item.id + "' target='_blank' title='" + item.summary + "'>" + item.title + "</a></li>")
+                        $(ulId).append("<li><a href='/blog/a/" + item.id + "' target='_blank' title='" + item.summary + "' style='line-height: 30px;'>" + item.title + "</a></li>")
                     });
                 }
             });

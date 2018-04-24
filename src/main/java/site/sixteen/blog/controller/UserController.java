@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -17,12 +18,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import site.sixteen.blog.dto.ArticleArchiveDTO;
 import site.sixteen.blog.entity.*;
 import site.sixteen.blog.enums.GenerateValidCodeResult;
 import site.sixteen.blog.exception.UserLoginException;
 import site.sixteen.blog.exception.UserPasswordException;
 import site.sixteen.blog.exception.UserRegisterException;
 import site.sixteen.blog.properties.ConstantProperties;
+import site.sixteen.blog.service.BlogService;
 import site.sixteen.blog.service.UserService;
 
 import javax.validation.Valid;
@@ -45,9 +48,15 @@ public class UserController {
     @Value("${spring.http.multipart.location}")
     private String fileUploadLocation;
 
+    @Value("${web.save-path}")
+    private String savePath;
+
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BlogService blogService;
 
 
     @GetMapping("/register")
@@ -110,18 +119,84 @@ public class UserController {
     }
 
 
+
+    /* 游客即可进行的操作 */
+
+    @GetMapping({"/u/{username}","/u/{username}/blog"})
+    public String getUserBlog(@PathVariable String username,
+                              @RequestParam(defaultValue = "1") Integer page,
+                              @RequestParam(defaultValue = "10") Integer size,
+                              @RequestParam(defaultValue = "new") String tab,
+                              Model model) {
+        User user = userService.getUser(username);
+        model.addAttribute("user", user);
+        model.addAttribute("activeSubTab", "blog");
+        Sort sort;
+        Pageable pageable;
+        switch (tab) {
+            case "hot":
+                sort = new Sort(Sort.Direction.DESC,"readCount","voteCount","commentCount");
+                pageable = new PageRequest(page - 1, size,sort);
+                Page<Article> articlesByHot = blogService.getUserArticles(user.getId(),pageable);
+                model.addAttribute("records",articlesByHot);
+                break;
+            case "category":
+                List<Category> categoryList = userService.getUserCategories(username);
+                model.addAttribute("categoryList",categoryList);
+                break;
+            case "archive":
+                List<ArticleArchiveDTO> articleArchiveDTOList = userService.getUserArchives(username);
+                model.addAttribute("articleArchiveDTOList",articleArchiveDTOList);
+                break;
+            default:
+                tab="new";
+                sort = new Sort(Sort.Direction.DESC,"updateTime","createTime");
+                pageable = new PageRequest(page - 1, size,sort);
+                Page<Article> articlesByNew = blogService.getUserArticles(user.getId(),pageable);
+                model.addAttribute("records",articlesByNew);
+        }
+        model.addAttribute("activeSubSubTab", tab);
+        return "user/front/user";
+    }
+    @GetMapping("/u/{username}/c/{categoryId}")
+    @ResponseBody
+    public List<Article> getUserCategoryArticles(@PathVariable String username,
+                                          @PathVariable long categoryId,
+                                          Model model){
+        return userService.getUserCategoryArticles(username,categoryId);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* 需要登录后的操作 */
+
     @GetMapping("/my")
     public String my(Model model) {
         model.addAttribute("user", userService.getCurrentUser());
+        model.addAttribute("activeNav", "user");
         log.info("{}", model);
-        return "user/info";
+        return "user/back/info";
     }
 
     @GetMapping("/my/info")
     public String myInfo(Model model) {
         model.addAttribute("user", userService.getCurrentUser());
         log.info("{}", model);
-        return "user/info-edit";
+        return "user/back/info-edit";
     }
 
     @PostMapping("/my/info")
@@ -140,7 +215,7 @@ public class UserController {
                 //此处把图片压成160的缩略图
                 int width = 160, height = 160;
                 Thumbnails.of(oldFile).size(width, height).toFile(oldFile);
-                user.setFace(fileName);
+                user.setFace(savePath+fileName);
             } else {
                 log.info("文件类型错误！");
                 redirectAttributes.addFlashAttribute("errorMsg", "头像修改失败，上传的文件文件类型不允许！");
@@ -154,7 +229,7 @@ public class UserController {
     public String myEmail(Model model) {
         model.addAttribute("user", userService.getCurrentUser());
         log.info("{}", model);
-        return "user/email-edit";
+        return "user/back/email-edit";
     }
 
     @PostMapping("/my/email/code")
@@ -189,7 +264,7 @@ public class UserController {
 
     @GetMapping("/my/setting")
     public String mySetting() {
-        return "user/setting";
+        return "user/back/setting";
     }
 
     @PostMapping("/my/setting")
@@ -205,7 +280,7 @@ public class UserController {
         Pageable pageable = new PageRequest(page - 1, size);
         Page<UserLog> logs = userService.getMyLogs(pageable);
         model.addAttribute("records", logs);
-        return "user/logs";
+        return "user/back/logs";
     }
 
     @GetMapping("/my/articles")
@@ -214,59 +289,64 @@ public class UserController {
         Pageable pageable = new PageRequest(page - 1, size);
         Page<Article> articles = userService.getMyArticles(pageable);
         model.addAttribute("records", articles);
-        return "user/articles";
+        return "user/back/articles";
     }
+
     @GetMapping("/my/article")
     public String goNewMyArticle(Model model) {
         List<Category> categoryList = userService.getMyCategories();
         model.addAttribute("categoryList", categoryList);
-        return "user/article-new";
+        return "user/back/article-new";
     }
+
     @PostMapping("/my/article")
     @ResponseBody
-    public  Map<String,Object>  newMyArticle(@Valid Article article,BindingResult bindingResult) {
-        Map<String,Object> map=new HashMap<>(1);
-        if(bindingResult.hasErrors()){
-            map.put("code",0);
-            map.put("msg","保存失败，数据不符合要求！");
-        }else{
+    public Map<String, Object> newMyArticle(@Valid Article article, BindingResult bindingResult) {
+        Map<String, Object> map = new HashMap<>(1);
+        if (bindingResult.hasErrors()) {
+            map.put("code", 0);
+            map.put("msg", "保存失败，数据不符合要求！");
+        } else {
             userService.newMyArticle(article);
-            map.put("code",1);
-            map.put("msg","保存成功！");
+            map.put("code", 1);
+            map.put("msg", "保存成功！");
         }
         return map;
     }
+
     @GetMapping("/my/article/update/{id}")
-    public String goUpdateArticle(@PathVariable long id,Model model,RedirectAttributes redirectAttributes) {
-        Article article= userService.getMyArticle(id);
-        if(article==null){
-            redirectAttributes.addFlashAttribute("errorMsg","操作失败，你没有权限");
+    public String goUpdateArticle(@PathVariable long id, Model model, RedirectAttributes redirectAttributes) {
+        Article article = userService.getMyArticle(id);
+        if (article == null) {
+            redirectAttributes.addFlashAttribute("errorMsg", "操作失败，你没有权限");
             return "redirect:/my/articles";
         }
         List<Category> categoryList = userService.getMyCategories();
         model.addAttribute("categoryList", categoryList);
-        model.addAttribute("article",article);
-        return "user/article-new";
+        model.addAttribute("article", article);
+        return "user/back/article-new";
     }
-    @GetMapping("/my/article/delete/{id}")
-    public String deleteArticle(@PathVariable long id,Model model,RedirectAttributes redirectAttributes) {
-        if(!userService.deleteMyArticle(id)){
-            redirectAttributes.addFlashAttribute("errorMsg","操作失败，你没有权限");
-        }else{
-            redirectAttributes.addFlashAttribute("successMsg","删除成功！");
+
+    @PostMapping("/my/article/delete")
+    public String deleteArticle(long id, RedirectAttributes redirectAttributes) {
+        if (!userService.deleteMyArticle(id)) {
+            redirectAttributes.addFlashAttribute("errorMsg", "操作失败，你没有权限");
+        } else {
+            redirectAttributes.addFlashAttribute("successMsg", "删除成功！");
         }
         return "redirect:/my/articles";
     }
+
     @GetMapping("/my/comments")
     public String myComments() {
-        return "user/comments";
+        return "user/back/comments";
     }
 
     @GetMapping("/my/categories")
     public String myCategories(Model model) {
         List<Category> categoryList = userService.getMyCategories();
         model.addAttribute("categoryList", categoryList);
-        return "user/categories";
+        return "user/back/categories";
     }
 
     @GetMapping("/my/category/{id}")
@@ -296,10 +376,11 @@ public class UserController {
 
     @DeleteMapping("/my/category/{id}")
     @ResponseBody
-    public Boolean deleteMyCategory(@PathVariable long id){
-        log.info("{}",id);
+    public Boolean deleteMyCategory(@PathVariable long id) {
+        log.info("{}", id);
         return userService.deleteMyCategory(id);
     }
+
     @GetMapping("/logout")
     public String logout(RedirectAttributes redirectAttributes) {
         //使用权限管理工具进行用户的退出，跳出登录，给出提示信息

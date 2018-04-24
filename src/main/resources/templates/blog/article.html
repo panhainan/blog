@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title data-th-text="${article.title}"></title>
+    <div th:replace="~{fragment/common :: common}"></div>
+</head>
+<body>
+<div th:replace="~{fragment/header :: header}"></div>
+<!-- Page Content -->
+<div class="container body-container">
+    <div class="col-sm-9 index-content" id="top">
+        <div class="col-sm-12" style="padding: 10px 20px 20px 20px">
+            <p class="h3" data-th-text="${article.title}"></p>
+            <hr class="bottom-line">
+            <div style="min-height: 60px;width: 100%">
+                <div style="height: 60px;width: 50px;float: left">
+                    <a data-th-href="@{'/u/'+${article.username}}">
+                        <img data-th-src="@{'/'+${article.userFace}}"
+                             style="width: 40px;height:40px;margin-top:3px "
+                             alt="">
+                    </a>
+
+                </div>
+                <div>
+                    <p style="height: 30px;margin: 10px 0 0px 0;">
+                        <a class="author-div hidden-xs"
+                           data-th-text="${article.userNicName}" data-th-href="@{'/u/'+${article.username}}"></a>
+                        <span class="tag-div">
+                          <span class="glyphicon glyphicon-time"></span>
+                          <span data-th-text="${#dates.format(article.createTime,'yyyy/MM/dd HH:mm')}"></span>
+                        </span>
+                        <a class="tag-div" data-th-href="@{'/u/'+${article.username}+'/blog?tab=category'}">
+                            <span class="glyphicon glyphicon-th-large"></span>
+                            <span data-th-text="${article.categoryName}"></span>
+                        </a>
+                    </p>
+                    <p style="height: 30px;margin: 5px 0 0px 0">
+                        <span data-th-each="tag : ${article.tags}" class="">
+                            <a class="tag-div" data-th-href="@{'/blog/t/'+${tag.name}}">
+                                <span class="glyphicon glyphicon-tag"></span>
+                                <span data-th-text="${tag.name}"></span>
+                            </a>
+                        </span>
+                        <span style="float:right;">
+                            <span class="tag-div">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span data-th-text="${article.readCount}"></span>
+                            </span>
+
+                            <span class="tag-div">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span data-th-text="${article.commentCount}"></span>
+                            </span>
+                            <span class="tag-div">
+                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                                <span style="padding-right: 8px;" data-th-text="${article.voteCount}"></span>
+                            </span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <hr class="bottom-line">
+            <div id="articleContentView">
+                <textarea style="display:none;" data-th-text="${article.content}"></textarea>
+            </div>
+            <hr class="bottom-line">
+            <div class="operate-div">
+                <ul style="text-align: center;list-style: none;margin-top: 20px;">
+                    <!-- 打賞 -->
+                    <!-- 点赞 -->
+                    <li>
+                        <a id="voteBtn" style="cursor: pointer;border: 1px solid silver;padding: 15px 15px;">
+                            <span style="font-size: 26px;top: 6px;" class="glyphicon glyphicon-thumbs-up"></span>
+                            <span style="font-size: 18px;" id="voteTxt">  点 赞 </span>
+                        </a>
+                    </li>
+                    <!-- 收藏 -->
+                    <!-- 分享 -->
+                </ul>
+            </div>
+
+
+        </div>
+        <span id="username" style="display: none"><shiro:principal/></span>
+        <div class="col-sm-12" id="comment" style="margin-top: 20px;min-height: 200px;height:auto;padding-bottom: 20px">
+            <div style="padding-top: 20px; ">
+                <h1 class="h3">评论区</h1>
+                <hr class="bottom-line">
+                <div data-th-each="comment,commentStat : ${article.commentList}"
+                     style="margin-top:8px;padding-top: 8px;padding-bottom: 3px;border: 1px solid #EEEEEE;">
+                    <div style="background-color: #F2F2F2;width: 100%">
+                        <span  class="tag-div" style="font-weight: bold;margin-left: 5px;"
+                              data-th-text="|#${commentStat.index+1}|"></span>
+                        <a class="author-div"
+                           data-th-text="${comment.nickname}"></a>发表于
+                        <span class="tag-div">
+                        <span class="glyphicon glyphicon-time"></span>
+                        <span data-th-text="${#dates.format(comment.createTime,'yyyy/MM/dd HH:mm')}"></span>
+                    </span>
+                    </div>
+                    <div data-th-utext="${comment.content}"
+                         style="border-top: 1px dashed #EEEEEE;margin-top: 10px;padding: 5px 10px">
+                    </div>
+                </div>
+            </div>
+            <hr class="bottom-line">
+            <div style="">
+                <h1 class="h3">发表评论</h1>
+                <shiro:authenticated>
+                    <form data-th-action="@{'/blog/a/'+${article.id}+'/c/u'}" method="post"
+                          onsubmit="setUserCommentContent()">
+                        <div id="user-comment-editormd" style="margin-bottom: 0;">
+                            <textarea style="display:none;"></textarea>
+                        </div>
+                        <input type="hidden" name="content" id="userCommentContent">
+                        <br>
+                        <input type="submit" class="btn btn-primary"  value="点击发表">
+                    </form>
+                </shiro:authenticated>
+                <shiro:notAuthenticated>
+                    <form data-th-action="@{'/blog/a/'+${article.id}+'/c/g'}" method="post"
+                          onsubmit="setGuestCommentContent()">
+                        <div class="input-group">
+                            <span class="input-group-addon">昵称</span>
+                            <input name="nickname" type="text" required class="form-control" placeholder="昵称"/>
+                        </div>
+                        <br/>
+                        <div class="input-group">
+                            <span class="input-group-addon">邮箱</span>
+                            <input name="email" type="email" class="form-control" placeholder="邮箱"/>
+                        </div>
+                        <br/>
+                        <div class="input-group">
+                            <span class="input-group-addon">个人网址</span>
+                            <input name="website" type="text" class="form-control" placeholder="个人网址"/>
+                        </div>
+                        <br>
+                        <div id="guest-comment-editormd" style="margin-bottom: 0;">
+                            <textarea style="display:none;"></textarea>
+                        </div>
+                        <input type="hidden" name="content" id="guestCommentContent">
+                        <br>
+                        <input type="submit" class="btn btn-primary"  value="点击发表">
+                    </form>
+                </shiro:notAuthenticated>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- 右侧栏目 -->
+    <div class="col-sm-3 index-sidebar hidden-xs">
+        <div class="col-sm-12">
+            <div class="panel panel-default" style="position: fixed;top: 70px;width: 100%">
+                <!-- Default panel contents -->
+                <div class="panel-heading">文章目录</div>
+                <div class="panel-body">
+                    <div class="articleMenu"></div>
+                    <div style="margin-top: 10px">
+                        <p><a href="#comment" target="_self" style="color: #337AB7"><span
+                                class="glyphicon glyphicon-comment" style="top: 2px"></span> 发表评论</a></p>
+                        <p><a href="#top" target="_self" style="color: #337AB7"><span
+                                class="glyphicon glyphicon-menu-up" style="top: 2px"></span> 返回顶部</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="~{fragment/footer :: footer}">...</div>
+<script data-th-src="@{/plugin/editor.md/editormd.js}"></script>
+<script data-th-src="@{/plugin/editor.md/lib/marked.min.js}"></script>
+<script data-th-src="@{/plugin/editor.md/lib/prettify.min.js}"></script>
+<script data-th-src="@{/plugin/editor.md/lib/flowchart.min.js}"></script>
+<script data-th-src="@{/plugin/editor.md/lib/jquery.flowchart.min.js}"></script>
+<!--<script data-th-src="@{/plugin/editor.md/lib/sequence-diagram.min.js}"></script>-->
+<script data-th-inline="javascript">
+    var commentEditormd;
+
+    function initVote() {
+        var articleId = [[${article.id}]];
+        var flag = localStorage.getItem("article_" + articleId);
+        if (flag == "1") {
+            $("#voteTxt").html("  已 赞 ");
+            $("#voteBtn").css({color: "green"});
+            $("#voteBtn").click(function () {
+                return false
+            });
+        } else {
+            $("#voteBtn").click(function () {
+                var articleId = [[${article.id}]];
+                $.post("/blog/a/" + articleId, function (result) {
+                    if (result == true) {
+                        console.log("点赞成功");
+                        localStorage.setItem("article_" + articleId, "1");
+                        $("#voteTxt").html("  已 赞 ");
+                        $("#voteBtn").css({color: "green"});
+                        location.reload(true);
+                    } else {
+                        console.log("点赞失败")
+                    }
+                })
+            })
+        }
+        ;
+    }
+
+    function setUserCommentContent() {
+        $("#userCommentContent").val(commentEditormd.getHTML());
+        return true;
+    }
+
+    function setGuestCommentContent() {
+        $("#guestCommentContent").val(commentEditormd.getHTML());
+        return true;
+    }
+
+    $(function () {
+        // var content = [[${article.content}]];
+        // console.log(content)
+        // $("#articleContentView").html(marked(content));
+        editormd.markdownToHTML("articleContentView", {
+            htmlDecode: "style,script,iframe",  // you can filter tags decode
+            emoji: true,
+            taskList: true,
+            tex: true,  // 默认不解析
+            flowChart: true,  // 默认不解析
+            sequenceDiagram: false,  // 默认不解析
+            codeFold: false,
+            atLink: false,
+            tocContainer: ".articleMenu",
+            tocDropdown: true
+        });
+
+        initVote();
+        var username = $("#username").html();
+        console.log(username);
+        if (username == null || username == "") {
+            commentEditormd = editormd("guest-comment-editormd", {
+                lineNumbers: false,
+                width: "100%",
+                height: 300,
+                watch: false,
+                path: "/plugin/editor.md/lib/",
+                toolbarIcons: function () {
+                    return editormd.toolbarModes["mini"];
+                },
+                onload: function () {
+                    this.setMarkdown("");
+                },
+                saveHTMLToTextarea: true,
+                autoFocus: false,
+                toolbarAutoFixed: false
+            });
+        } else {
+            commentEditormd = editormd("user-comment-editormd", {
+                lineNumbers: false,
+                width: "100%",
+                height: 300,
+                watch: false,
+                path: "/plugin/editor.md/lib/",
+                toolbarIcons: function () {
+                    return editormd.toolbarModes["mini"];
+                },
+                onload: function () {
+                    this.setMarkdown("");
+                },
+                saveHTMLToTextarea: true,
+                autoFocus: false,
+                toolbarAutoFixed: false
+            });
+        }
+
+    });
+
+
+</script>
+</body>
+</html>

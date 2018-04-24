@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心-文章管理</title>
+    <div th:replace="~{fragment/common :: common}"></div>
+</head>
+<body>
+<div th:replace="~{fragment/header :: header}"></div>
+<div class="body-container container" style="margin-top: 20px">
+    <div class="col-sm-2 my-nav">
+        <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my-articles')}"></ul>
+    </div>
+    <div class="col-sm-10 my-content">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <h4>文章管理<span style="font-size: 14px" data-th-text="| （共${records.totalElements}篇）|"/>
+                    <a data-th-href="@{/my/article}" class="btn btn-sm btn-success">新建文章
+                    </a>
+                    <span style="font-size: 14px;color:red" data-th-text="${errorMsg}"/>
+                    <span style="font-size: 14px;color:green" data-th-text="${successMsg}"/>
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div style="min-height: 410px" class="table-responsive">
+                    <table class="table table-bordered table-hover" style="text-align: center;margin-bottom: 0">
+                        <tr>
+                            <td>标题</td>
+                            <td>类别</td>
+                            <td>标签</td>
+                            <td>状态</td>
+                            <td><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></td>
+                            <td><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></td>
+                            <td><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></td>
+                            <!--<td>创建于</td>
+                            <td>更新于</td>-->
+                            <td>操作</td>
+                        </tr>
+                        <tr th:each="article : ${records}">
+                            <td style="max-width: 350px;text-align: left;">
+                                <div style="width:100%;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
+                                     data-th-if="${article.status}==0" data-th-text="${article.title}"></div>
+                                <div style="width:100%;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
+                                     data-th-if="${article.status}==1"><a data-th-text="${article.title}" target="_blank" data-th-href="@{'/blog/a/'+${article.id}}"></a></div>
+                            </td>
+                            <td data-th-text="${article.categoryName}"></td>
+                            <td>
+                                <span data-th-each="tag: ${article.tags}" data-th-text="|${tag.name};|"></span>
+                            </td>
+                            <td><span style="color:#F0AD4E;" data-th-if="${article.status}==0">草稿</span>
+                                <span style="color:green;" data-th-if="${article.status}==1">已发布</span>
+                            </td>
+                            <td data-th-text="${article.readCount}"></td>
+                            <td data-th-text="${article.voteCount}"></td>
+                            <td data-th-text="${article.commentCount}"></td>
+                            <!--<td data-th-text="${#dates.format(article.createTime,'yyyy/MM/dd HH:mm')}"></td>
+                            <td data-th-text="${#dates.format(article.updateTime,'yyyy/MM/dd HH:mm')}"></td>-->
+                            <td>
+                                <a data-th-href="@{'/my/article/update/'+${article.id}}" class="btn btn-xs btn-primary">编辑</a>
+                                <a class="btn btn-xs btn-danger"
+                                   data-toggle="modal" data-target=".bs-example-modal-md-delete"
+                                   style="color: #ffffff;"
+                                   data-th-onclick="'javascript:setDelete(\''+${article.id}+'\',\''+${article.title}+'\');'"
+                                >删除</a></td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <div th:replace="~{fragment/page :: page(url='/my/articles?',hide='1')}">...</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-md-delete" tabindex="-1" role="dialog"
+     aria-labelledby="myLargeModalLabelDelete">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <form data-th-action="@{/my/article/delete}" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myLargeModalLabelDelete">操作确认</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="article-title" class="control-label">确认删除下面的文章吗？</label>
+                        <input type="text" readonly class="form-control" id="article-title">
+                        <input type="hidden" name="id" readonly id="article-id">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <input type="submit"  value="确认删除"
+                           class="btn btn-primary btn-danger">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragment/footer :: footer}">...</div>
+<script data-th-inline="javascript">
+    function setDelete(articleId, articleTitle) {
+        $("#article-title").val(articleTitle)
+        $("#article-id").val(articleId)
+    }
+
+</script>
+</body>
+</html>

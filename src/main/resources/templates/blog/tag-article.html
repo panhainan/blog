@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>首页</title>
+    <title data-th-text="|${tagName} 标签|">标签</title>
     <div th:replace="~{fragment/common :: common}"></div>
 </head>
 <body>
@@ -10,14 +10,9 @@
 <div class="container body-container">
     <div class="col-sm-8 index-content">
         <div class="col-sm-12">
-            <ul class="nav nav-tabs" style="padding-top: 10px;">
-                <li role="presentation" data-th-class="${activeTab=='new'?'active':''}">
-                    <a data-th-href="@{'/blog?order=new'}" >最新</a>
-                </li>
-                <li role="presentation" data-th-class="${activeTab=='hot'?'active':''}">
-                    <a data-th-href="@{'/blog?order=hot'}">最热</a>
-                </li>
-            </ul>
+            <p style="font-size: 20px; padding: 20px 5px 15px 5px;border-bottom: 1px solid #DDDDDD;margin: 0;">
+                标签 <span class="tag-div" data-th-text="${tagName}"></span>下的文章
+            </p>
             <div class="col-sm-12 card" style="padding:0;margin-top:10px;border-bottom:1px solid #DDDDDD"
                  data-th-each="article : ${records}">
                 <div class="card-side" style="min-height:70px;width: 50px;float: left;">
@@ -71,7 +66,7 @@
 
         </div>
         <!-- Pagination -->
-        <div th:replace="~{fragment/page :: page(url='/blog?order='+${activeTab}+'&')}">...</div>
+        <div th:replace="~{fragment/page :: page(url='/blog/t/'+${tagName}+'?')}">...</div>
     </div>
     <!-- 右侧栏目 -->
     <div class="col-sm-4 index-sidebar">

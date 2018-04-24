@@ -2,6 +2,7 @@ package site.sixteen.blog.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import site.sixteen.blog.dto.ArticleArchiveDTO;
 import site.sixteen.blog.entity.*;
 import site.sixteen.blog.enums.GenerateValidCodeResult;
 import site.sixteen.blog.exception.UserPasswordException;
@@ -28,6 +29,16 @@ public interface UserService {
      * @throws UserRegisterException
      */
     Long register(UserAuth userAuth) throws UserRegisterException;
+
+
+    /**
+     * 游客查看用户信息
+     * @param username
+     * @return
+     */
+    User getUser(String username);
+
+
 
     /**
      * 根据用户唯一标识（即用户名）获取用户授权信息
@@ -140,4 +151,27 @@ public interface UserService {
      * @return
      */
     boolean deleteMyArticle(long id);
+
+
+    /**
+     * 获取用户文章类别
+     * @param username
+     * @return
+     */
+    List<Category> getUserCategories(String username);
+
+    /**
+     * 获取用户文章类别下的文章
+     * @param username
+     * @param categoryId
+     * @return
+     */
+    List<Article> getUserCategoryArticles(String username, long categoryId);
+
+    /**
+     * 获取用户文章归档
+     * @param username
+     * @return
+     */
+    List<ArticleArchiveDTO> getUserArchives(String username);
 }

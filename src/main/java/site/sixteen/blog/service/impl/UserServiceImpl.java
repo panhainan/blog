@@ -12,6 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import site.sixteen.blog.dto.ArticleArchiveDTO;
 import site.sixteen.blog.entity.*;
 import site.sixteen.blog.enums.GenerateValidCodeResult;
 import site.sixteen.blog.enums.ValidCodeType;
@@ -22,16 +23,14 @@ import site.sixteen.blog.service.UserService;
 import site.sixteen.blog.util.StringRandom;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author panhainan@yeah.net(@link http://sixteen.site)
  **/
 @Slf4j
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends CommonService implements UserService {
 
     private static final int IDENTITY_TYPE_PHONE = 1;
     private static final int IDENTITY_TYPE_EMAIL = 2;
@@ -39,7 +38,7 @@ public class UserServiceImpl implements UserService {
     private static final int IDENTITY_TYPE_QQ = 4;
     private static final int IDENTITY_TYPE_WECHAT = 5;
     private static final int IDENTITY_TYPE_SINA = 6;
-    private static final String DEFAULT_CATEGORY_NAME="默认分类";
+    private static final String DEFAULT_CATEGORY_NAME="无归类文章";
 
     /**
      * 验证码有效时长
@@ -47,12 +46,7 @@ public class UserServiceImpl implements UserService {
     private static final long VALID_CODE_EFFECTIVE_DURATION = 1000 * 60 * 10L;
 
     @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
     private UserAuthRepository userAuthRepository;
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private UserLogRepository userLogRepository;
     @Autowired
@@ -60,16 +54,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserValidRepository userValidRepository;
     @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
     private ArticleRepository articleRepository;
 
     @Value("${spring.mail.username}")
     private String Sender;
 
+
     @Override
     public User getUserByUsername(String username) {
-        return userRepository.findUserByUsername(username);
+        return super.getUserByUsername(username);
     }
 
     @Override
@@ -91,11 +84,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getCurrentUser() {
-        Subject currentSubject = SecurityUtils.getSubject();
-        String username = String.valueOf(currentSubject.getPrincipal());
-        return getUserByUsername(username);
+    public User getUser(String username) {
+        User user = userRepository.findUserByUsername(username);
+        //TODO 隐藏敏感信息
+        user.setEmail(null);
+        user.setEmailBindTime(null);
+        user.setMobile(null);
+        user.setMobileBindTime(null);
+//        user.setUsername(null);
+        user.setUpdateTime(null);
+        return user;
     }
+
+    @Override
+    public UserAuth getUserAuthByUsername(String username) {
+        return super.getUserAuthByUsername(username);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        return super.getCurrentUser();
+    }
+
 
     @Override
     public Long updateMyInfo(User user) {
@@ -161,47 +171,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void setArticleTags(Article article){
-        if(!StringUtils.isEmpty(article.getTagIdStr())){
-            String[] tagIdArr = article.getTagIdStr().split(";");
-            Tag[] tags = new Tag[tagIdArr.length];
-            for (int i=0;i<tagIdArr.length;i++){
-                Long tagId = Long.valueOf(tagIdArr[i]);
-                tags[i]=tagRepository.findOne(tagId);
-            }
-            article.setTags(tags);
-        }
-    }
     @Override
     public void newMyArticle(Article article) {
         User currentUser = getCurrentUser();
         String tagIdStr = article.getTagIdStr();
-        //处理标签
-        if(!StringUtils.isEmpty(tagIdStr)){
-            StringBuilder stringBuilder = new StringBuilder();
-            boolean flag = false;
-            String[] tagNames = tagIdStr.split(";");
-            for (String tagName : tagNames){
-                String tagNameTrim = tagName.trim();
-                if(!StringUtils.isEmpty(tagNameTrim)){
-                    Tag dbTag =tagRepository.findTagByName(tagNameTrim);
-                    if(dbTag==null){
-                        dbTag = tagRepository.save(new Tag(tagNameTrim));
-                        stringBuilder.append(dbTag.getId()).append(";");
-                    }else{
-                        if(-1==stringBuilder.indexOf(String.valueOf(dbTag.getId()))){
-                            stringBuilder.append(dbTag.getId()).append(";");
-                        }
-                    }
-                    flag = true;
-                }
-            }
-            String idStr = "";
-            if(flag){
-                idStr= stringBuilder.substring(0,stringBuilder.length()-1);
-            }
-            article.setTagIdStr(idStr);
-        }
+        //处理标签-保存到数据库
+        article.setTagIdStr(saveTags(tagIdStr));
         //处理分类
         if (article.getCategoryId()==null|| article.getCategoryId()==0){
             article.setCategoryId(getDefaultCategory(currentUser.getId()));
@@ -233,6 +208,47 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Category> getUserCategories(String username) {
+        User user = userRepository.findUserByUsername(username);
+        return categoryRepository.findAllByUserIdOrderByIdDesc(user.getId());
+    }
+
+    @Override
+    public List<Article> getUserCategoryArticles(String username, long categoryId) {
+        return articleRepository.findArticlesByCategoryIdAndStatus(categoryId,1);
+    }
+
+    @Override
+    public List<ArticleArchiveDTO> getUserArchives(String username) {
+        User user = userRepository.findUserByUsername(username);
+        List<Article> articles = articleRepository.findArticlesByUserIdAndStatusOrderByCreateTimeDesc(user.getId(),1);
+        List<ArticleArchiveDTO> articleArchiveDTOList = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        for(Article article: articles){
+            Date createTime = article.getCreateTime();
+            calendar.setTime(createTime);
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            boolean flag = false;
+            for(ArticleArchiveDTO a : articleArchiveDTOList){
+                if(a.getYear().intValue()==year && a.getMonth().intValue() ==month){
+                    //list中已经存在对应年月
+                    a.getArticles().add(article);
+                    flag = true;
+                }
+            }
+            if(!flag){
+                ArticleArchiveDTO articleArchiveDTO = new ArticleArchiveDTO(year,month);
+                List<Article> articles1 = new ArrayList<>();
+                articles1.add(article);
+                articleArchiveDTO.setArticles(articles1);
+                articleArchiveDTOList.add(articleArchiveDTO);
+            }
+        }
+        return articleArchiveDTOList;
     }
 
 
@@ -319,7 +335,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Category> getMyCategories() {
         User currentUser = getCurrentUser();
-        return categoryRepository.findAllByUserIdOrderById(currentUser.getId());
+        return categoryRepository.findAllByUserIdOrderByIdDesc(currentUser.getId());
     }
 
     @Override
@@ -369,18 +385,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private UserAuth getCurrentUserAuth() {
-        Subject currentSubject = SecurityUtils.getSubject();
-        String username = String.valueOf(currentSubject.getPrincipal());
-        return getUserAuthByUsername(username);
-    }
 
-    private boolean checkUsernameIsExisted(String username) {
-        return userAuthRepository.findUserAuthByUsername(username)!=null;
-    }
 
-    @Override
-    public UserAuth getUserAuthByUsername(String username) {
-        return userAuthRepository.findUserAuthByUsername(username);
-    }
+
 }

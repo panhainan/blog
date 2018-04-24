@@ -16,7 +16,7 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
      * @param userId
      * @return
      */
-    List<Category> findAllByUserIdOrderById(long userId);
+    List<Category> findAllByUserIdOrderByIdDesc(long userId);
 
 
     /**

@@ -1,7 +1,9 @@
 server:
   port: 8080
 web:
-  upload-path: F:/tmp/upload/user
+  upload-folder: F:/tmp
+  save-path: upload/user/
+
 spring:
   datasource:
     username: root
@@ -46,7 +48,7 @@ spring:
       - classpath:/resources/
       - classpath:/static/
       - classpath:/public/
-      - file:${web.upload-path}
+      - file:${web.upload-folder}
   #smtp.qq.com
   mail:
     host: smtp.163.com

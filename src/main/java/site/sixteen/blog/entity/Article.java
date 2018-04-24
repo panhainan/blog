@@ -3,7 +3,9 @@ package site.sixteen.blog.entity;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author panhainan@yeah.net(@link http://sixteen.site)
@@ -59,9 +61,15 @@ public class Article {
     @Transient
     private String userNicName;
     @Transient
+    private String username;
+    @Transient
+    private String userFace;
+    @Transient
     private String categoryName;
     @Transient
     private Tag[] tags;
+    @Transient
+    private List<Comment> commentList;
 
 
     public void initDefaultInfo() {
@@ -72,22 +80,6 @@ public class Article {
     }
 
     public Article() {
-    }
-
-    public Article(Long id,Long userId, Long categoryId, String tagIdStr, String title, String summary, String content, Integer readCount, Integer commentCount, Integer voteCount, Integer status, Date createTime, Date updateTime) {
-        this.id=id;
-        this.userId = userId;
-        this.categoryId = categoryId;
-        this.tagIdStr = tagIdStr;
-        this.title = title;
-        this.summary = summary;
-        this.content = content;
-        this.readCount = readCount;
-        this.commentCount = commentCount;
-        this.voteCount = voteCount;
-        this.status = status;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
     }
 
     @Override
@@ -106,6 +98,12 @@ public class Article {
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
+                ", userNicName='" + userNicName + '\'' +
+                ", username='" + username + '\'' +
+                ", userFace='" + userFace + '\'' +
+                ", categoryName='" + categoryName + '\'' +
+                ", tags=" + Arrays.toString(tags) +
+                ", commentList=" + commentList +
                 '}';
     }
 
@@ -221,6 +219,14 @@ public class Article {
         this.userNicName = userNicName;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getCategoryName() {
         return categoryName;
     }
@@ -237,5 +243,19 @@ public class Article {
         this.tags = tags;
     }
 
+    public String getUserFace() {
+        return userFace;
+    }
 
+    public void setUserFace(String userFace) {
+        this.userFace = userFace;
+    }
+
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
 }

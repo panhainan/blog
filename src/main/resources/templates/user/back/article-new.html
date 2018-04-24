@@ -89,7 +89,7 @@
     $(function () {
         var article = [[${article}]];
         // console.log(article);
-        if (article != null) {
+        if (article != null && article.tags!=null) {
             var articleTagIdStr = "";
             for (var i = 0; i < article.tags.length; i++) {
                 articleTagIdStr += article.tags[i].name + ";";

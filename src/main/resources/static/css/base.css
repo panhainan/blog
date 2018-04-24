@@ -1,53 +1,69 @@
-body{
+body {
     font-family: 微软雅黑;
     background-color: #F2F2F2;
 }
-.panel{
-    box-shadow:none;
+
+body a {
+    color: #000000;
 }
-.container{
+
+.panel {
+    box-shadow: none;
+}
+
+.container {
     padding-left: 0;
     padding-right: 0;
 }
-.body-container{
+
+.body-container {
     min-height: 600px;
+    height: auto;
     margin-bottom: 20px;
 }
 
-.index-content{
+.index-content {
     margin-top: 20px;
     min-height: 600px;
+    height:auto;
     padding-right: 10px;
     padding-left: 10px;
 }
-.index-content .col-sm-12{
+
+.index-content > .col-sm-12 {
     background-color: #ffffff;
     min-height: 600px;
+    height:auto;
 }
-.index-sidebar{
+
+.index-sidebar {
     margin-top: 20px;
     padding-right: 10px;
     padding-left: 10px;
 
 }
-.index-sidebar  .col-sm-12{
+
+.index-sidebar > .col-sm-12 {
     padding: 0;
 }
+
 .index-sidebar .panel {
-    border:0;
+    border: 0;
     border-radius: 0px;
     padding: 10px;
 }
 
-.index-sidebar .panel-default>.panel-heading{
+.index-sidebar .panel-default > .panel-heading {
     background-color: #ffffff;
 }
 
-.index-sidebar .panel .panel-body{
+.index-sidebar .panel .panel-body {
     min-height: 100px;
+    height:auto;
 }
+
 /*   个人中心中的配置 */
-.my-nav{
+.my-nav {
     height: 600px;
     background-color: #393D49;
     padding-left: 0px;
@@ -62,43 +78,146 @@ body{
     border-bottom: 1px solid #313640;
     text-align: center;
 }
-.my-nav .nav-stacked > li a{
+
+.my-nav .nav-stacked > li a {
     color: #ffffff;
 }
-.my-nav .nav-stacked > li a:hover{
-    background-color: #4E5465;
+
+.my-nav .nav-stacked > li a:hover {
+    background-color: #337AB7;
 }
-.my-nav .nav-stacked >li.active{
+
+.my-nav .nav-stacked > li.active {
     /*background-color: #009688;*/
+    background-color: #337AB7;
 }
-.my-nav .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
+
+.my-nav .nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
     /*background-color: #009688;*/
+    background-color: #337AB7;
 }
-.my-content{
+
+.my-content {
     min-height: 600px;
+    height:auto;
     background-color: #ffffff;
     padding-left: 20px;
 }
+
 .my-content > .panel {
-    border:0;
+    border: 0;
     border-radius: 0px;
     padding: 10px 0px;
 }
-.my-content > .panel-default>.panel-heading{
+
+.my-content > .panel-default > .panel-heading {
     background-color: #ffffff;
 }
 
 /* 新建文章 */
 
-.article-form .form-control{
+.article-form .form-control,.input-group-addon {
     border-radius: 0;
 }
 
+/* 文章详情页面 */
+.operate-div a:link,a:visited,a:hover,a:active {
+    text-decoration: none;
+}
+.operate-div a:hover{
+    color: green;
+}
+#comment{
+    height:auto;
+}
+#comment .form-control{
+    border-radius: 0;
+
+}
+
+/*#articleContentView table td, #articleContentView table th {
+    text-align: left;
+    padding: 4px 8px 4px 10px;
+    border: 1px solid #dadada;
+    vertical-align: top;
+}*/
+
+/*#articleContentView a {
+    color: #337AB7;
+}*/
+.articleMenu ul {
+    list-style-type: none;
+}
+
+.articleMenu ul {
+    padding: 0px;
+    margin: 0px;
+}
+
+.articleMenu ul ul {
+    padding-left: 20px;
+}
+
+.author-div {
+    margin-right: 5px;
+    padding: 4px;
+    background-color: #F5F5F5;
+    border-radius: 4px;
+    color: green;
+    font-weight: bolder;
+}
+
+.tag-div {
+    margin-right: 5px;
+    padding: 4px;
+    background-color: #F5F5F5;
+    border-radius: 4px;
+}
+
+.bottom-line {
+    margin-top: 8px;
+    margin-bottom: 5px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
 
 /* 登录注册的配置 */
-.login,.register {
+.login, .register {
     margin-left: auto;
     margin-right: auto;
     margin-top: 100PX;
     width: 20em;
 }
+
+/* 游客查看的用户页面 */
+
+.user-header {
+    height: 600px;
+    padding: 30px 0 30px 0px;
+    text-align: center;
+    background-color: #ffffff;
+    border-right: 1px solid #DDDDDD;
+}
+
+.user-header .nav-pills > li > a {
+    border-radius: 0px;
+}
+
+.user-body {
+    min-height: 600px;
+    background-color: #ffffff;
+    padding-left: 20px;
+}
+
+@media screen and (max-device-width: 400px) {
+
+    .user-header, .my-nav {
+        height: auto;
+    }
+    #articleContentView{
+        padding-right: 0px;
+        padding-left: 0px;
+    }
+
+}
+
