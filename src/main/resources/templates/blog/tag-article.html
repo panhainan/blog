@@ -69,76 +69,7 @@
         <div th:replace="~{fragment/page :: page(url='/blog/t/'+${tagName}+'?')}">...</div>
     </div>
     <!-- 右侧栏目 -->
-    <div class="col-sm-4 index-sidebar">
-        <div class="col-sm-12">
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading">温馨提示</div>
-                <div class="panel-body">
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading">活跃用户</div>
-                <div class="panel-body">
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading">热门标签</div>
-                <div class="panel-body">
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Web Design</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Jersey</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">JavaScript</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">CSS</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Java</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Freebies</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Web Design</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Jersey</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">JavaScript</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">CSS</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Java</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Freebies</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Web Design</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Jersey</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">JavaScript</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">CSS</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Java</span></a>
-                    <a href="/blogs?tag=1"> <span class="badge badge-default">Freebies</span></a>
-                </div>
-            </div>
-        </div>
-        <!--<div class="col-sm-12">
-            <div class="panel panel-default">
-                &lt;!&ndash; Default panel contents &ndash;&gt;
-                <div class="panel-heading">热门文章</div>
-                <div class="panel-body">
-                    <ul class="list-group">
-                        <a href="/u/waylau/blogs/1" class="list-group-item" title="waylau">
-                            Spring Data + Thymeleaf 3 + Bootstrap 4 实现分页器<span
-                                class="badge badge-danger badge-pill">11115</span>
-                        </a>
-                        <a href="/u/waylau/blogs/1" class="list-group-item" title="waylau">
-                            用大白话聊聊分布式系统<span class="badge badge-warning badge-pill">338</span>
-                        </a>
-                        <a href="/u/waylau/blogs/1" class="list-group-item" title="waylau">
-                            用大白话聊聊分布式系统<span class="badge badge-info badge-pill">289</span>
-                        </a>
-                        <a href="/u/waylau/blogs/1" class="list-group-item" title="waylau">
-                            使用 Eclipse Checkstyle Plugin<span class="badge badge-default badge-pill">189</span>
-                        </a>
-
-                        <a href="/u/waylau/blogs/1" class="list-group-item" title="waylau">
-                            使用 Eclipse Checkstyle Plugin<span class="badge badge-default badge-pill">189</span>
-                        </a>
-                    </ul>
-                </div>
-            </div>
-        </div>-->
+    <div class="col-sm-4 index-sidebar" th:insert="~{fragment/index-sidebar :: index-sidebar}">
     </div>
 </div>
 

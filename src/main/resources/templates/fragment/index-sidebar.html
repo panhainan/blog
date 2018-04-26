@@ -1,0 +1,36 @@
+<div class="col-sm-12" data-th-fragment="index-sidebar">
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">温馨提示</div>
+        <div class="panel-body">
+            <p>欢迎来到霸下社区，这里会发布社区的相关公告！</p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">活跃用户</div>
+        <div class="panel-body">
+            <div data-th-each="user : ${activeUsers}"
+                 style="width:60px;float:left;overflow:hidden;text-overflow:ellipsis;text-align: center;font-size: 8px;"
+                 class="text-nowrap">
+                <a data-th-href="@{'/u/'+${user.username}}"><img data-th-src="@{'/'+${user.face}}"
+                                                                 style="width: 40px;height:40px;margin-top:13px "
+                                                                 alt="">
+                    <br>
+                    <span data-th-text="${user.nickname}"></span>
+                </a>
+
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">热门标签</div>
+        <div class="panel-body">
+            <a class="tag-badge" data-th-href="@{'/blog/t/'+${tag.name}}" data-th-each="tag : ${hotTags}">
+                <span class="glyphicon glyphicon-tag"></span>
+                <span data-th-text="${tag.name}"></span></a>
+
+        </div>
+    </div>
+</div>

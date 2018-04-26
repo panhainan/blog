@@ -55,7 +55,8 @@ public class UserServiceImpl extends CommonService implements UserService {
     private UserValidRepository userValidRepository;
     @Autowired
     private ArticleRepository articleRepository;
-
+    @Autowired
+    private CommentRepository commentRepository;
     @Value("${spring.mail.username}")
     private String Sender;
 
@@ -249,6 +250,19 @@ public class UserServiceImpl extends CommonService implements UserService {
             }
         }
         return articleArchiveDTOList;
+    }
+
+    @Override
+    public Page<Comment> getMyComments(Pageable pageable) {
+        User user = getCurrentUser();
+        return commentRepository.findCommentsByUserIdOrderByCreateTimeDesc(user.getId(),pageable);
+    }
+
+    @Override
+    public Page<Comment> getMyArticleComments(Pageable pageable) {
+        User user = getCurrentUser();
+        List<Long> listIds = articleRepository.findArticleIdsByUserIdAndStatus(user.getId(),1);
+        return commentRepository.findCommentsByArticleIdIn(listIds,pageable);
     }
 
 

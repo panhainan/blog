@@ -276,7 +276,8 @@ public class UserController {
 
     @GetMapping("/my/logs")
     public String myLogs(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                         @RequestParam(value = "size", defaultValue = "10") Integer size, Model model) {
+                         @RequestParam(value = "size", defaultValue = "10") Integer size,
+                         Model model) {
         Pageable pageable = new PageRequest(page - 1, size);
         Page<UserLog> logs = userService.getMyLogs(pageable);
         model.addAttribute("records", logs);
@@ -285,7 +286,8 @@ public class UserController {
 
     @GetMapping("/my/articles")
     public String myArticles(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                             @RequestParam(value = "size", defaultValue = "10") Integer size, Model model) {
+                             @RequestParam(value = "size", defaultValue = "10") Integer size,
+                             Model model) {
         Pageable pageable = new PageRequest(page - 1, size);
         Page<Article> articles = userService.getMyArticles(pageable);
         model.addAttribute("records", articles);
@@ -338,7 +340,22 @@ public class UserController {
     }
 
     @GetMapping("/my/comments")
-    public String myComments() {
+    public String myComments(@RequestParam(defaultValue = "from")String type,
+                             @RequestParam(defaultValue = "1") Integer page,
+                             @RequestParam(defaultValue = "10") Integer size,
+                             Model model) {
+        Pageable pageable = new PageRequest(page - 1, size);
+        Page<Comment> comments;
+        if("to".equals(type)){
+            //获取我发表的评论
+            comments = userService.getMyComments(pageable);
+        }else{
+            //获取我的文章的评论
+            type="from";
+            comments = userService.getMyArticleComments(pageable);
+        }
+        model.addAttribute("records",comments);
+        model.addAttribute("type",type);
         return "user/back/comments";
     }
 

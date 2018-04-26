@@ -21,7 +21,7 @@
         </div>
         <div class="form-group">
             <select class="form-control" id="articleCategoryId" name="categoryId">
-                <option value="=0">请选择类别</option>
+                <option value="0">请选择类别</option>
                 <option data-th-value="${category.id}"
                         data-th-selected="${article != null ? category.id==article.categoryId:false}"
                         data-th-each="category : ${categoryList}"

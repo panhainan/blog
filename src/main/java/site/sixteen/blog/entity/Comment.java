@@ -35,6 +35,9 @@ public class Comment {
     @Column(name = "article_id")
     private Long articleId;
 
+    @Column(name = "article_name")
+    private String articleName;
+
     @Column(name = "sign_in")
     private boolean signIn;
 
@@ -46,6 +49,8 @@ public class Comment {
 
     @Column(name = "vote_count")
     private Integer voteCount;
+
+
 
     @Override
     public String toString() {
@@ -60,6 +65,7 @@ public class Comment {
                 ", userId=" + userId +
                 ", createTime=" + createTime +
                 ", voteCount=" + voteCount +
+                ", articleName='" + articleName + '\'' +
                 '}';
     }
 
@@ -142,5 +148,13 @@ public class Comment {
 
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public String getArticleName() {
+        return articleName;
+    }
+
+    public void setArticleName(String articleName) {
+        this.articleName = articleName;
     }
 }

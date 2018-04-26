@@ -19,11 +19,12 @@
                     <li  data-th-class="${activeNav=='blog' or activeSubTab=='blog'?'active':''}"><a data-th-href="@{/blog}">　博 客　</a></li>
                     <!--<li data-th-class="${activeNav=='question' or activeSubTab=='question' ?'active':''}"><a href="/question">　问 答　</a></li>-->
                     <li>
-                        <form class="navbar-form navbar-left" style="margin-left:10px;margin-right: 10px;">
+                        <form data-th-action="@{/blog/s}" method="get" class="navbar-form navbar-left" style="margin-left:10px;margin-right: 10px;">
                             <div class="form-group">
-                                <input type="text" style="border-radius: 0" class="form-control" placeholder="关键字">
+                                <input type="text" style="border-radius: 0" required name="keyword" class="form-control" placeholder="整站搜索：关键字">
                             </div>
-                            <button type="submit" style="border-radius: 0"  class="btn btn-default">搜索</button>
+
+                            <button type="submit" style="border-radius: 0;background-color: #222222"  class="btn btn-default"><span class="glyphicon glyphicon-search" style="color: #ffffff"></span></button>
                         </form>
                     </li>
                 </ul>

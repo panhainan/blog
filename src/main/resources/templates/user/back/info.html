@@ -17,7 +17,7 @@
             <div class="panel-heading">
                 <h4>基本资料
                     <a class="btn btn-sm btn-primary" th:href="@{/my/info}">编 辑</a>
-                    <a data-th-href="@{'/u/'+${user.id}}" target="_blank" style="float: right;font-size: 14px;line-height: 30px;color: #337AB7;">查看个人主页</a>
+                    <a data-th-href="@{'/u/'+${user.username}}" target="_blank" style="float: right;font-size: 14px;line-height: 30px;color: #337AB7;">查看个人主页</a>
                 </h4>
             </div>
             <div class="panel-body">
@@ -25,32 +25,32 @@
                 <div class="col-sm-6 col-lg-7" style="padding: 0">
                     <table class="table table-bordered table-responsive">
                         <tr>
-                            <td width="30%" style="text-align: center">用　 户 　名</td>
+                            <td width="30%" style="text-align: center">用  户  名</td>
                             <td><span data-th-text="${user.username}"/></td>
                         </tr>
                         <tr>
-                            <td style="text-align: center">昵　　　称</td>
+                            <td style="text-align: center">昵    称</td>
                             <td><span data-th-text="${user.nickname}"/></td>
                         </tr>
                         <tr>
-                            <td style="text-align: center">性　　　别</td>
+                            <td style="text-align: center">性    别</td>
                             <td><span data-th-text="${user.gender}==1?'男':'女'"/></td>
                         </tr>
                         <tr>
-                            <td style="text-align: center">生　　　日</td>
+                            <td style="text-align: center">生    日</td>
                             <td><span data-th-text="${#calendars.format(user.birthday,'yyyy-MM-dd')}"/></td>
                         </tr>
                         <tr>
-                            <td style="text-align: center">手　 机 　号</td>
+                            <td style="text-align: center">手  机  号</td>
                             <td><span data-th-text="${user.mobile}"/></td>
                         </tr>
                         <tr>
-                            <td style="text-align: center">手机绑定时间</td>
+                            <td style="text-align: center">手机绑定于</td>
                             <td><span data-th-text="${#calendars.format(user.mobileBindTime,'yyyy-MM-dd HH:mm:ss')}"/>
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align: center">邮　 箱 　号</td>
+                            <td style="text-align: center">邮  箱  号</td>
                             <td>
                                 <span data-th-text="${user.email}"/>&emsp;&emsp;
                                 <a th:href="@{/my/email}" th:if="${#strings.isEmpty(user.email)}"
@@ -62,7 +62,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align: center">邮箱绑定时间</td>
+                            <td style="text-align: center">邮箱绑定于</td>
                             <td><span data-th-text="${#calendars.format(user.emailBindTime,'yyyy-MM-dd HH:mm:ss')}"/>
                             </td>
                         </tr>
@@ -71,7 +71,7 @@
                             <td><span data-th-text="${#calendars.format(user.createTime,'yyyy-MM-dd HH:mm:ss')}"/></td>
                         </tr>
                         <tr>
-                            <td style="text-align: center">上次修改时间</td>
+                            <td style="text-align: center">上次修改于</td>
                             <td><span data-th-text="${#calendars.format(user.updateTime,'yyyy-MM-dd HH:mm:ss')}"/></td>
                         </tr>
                     </table>

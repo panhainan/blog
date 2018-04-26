@@ -4,6 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import site.sixteen.blog.entity.Article;
 import site.sixteen.blog.entity.Comment;
+import site.sixteen.blog.entity.Tag;
+import site.sixteen.blog.entity.User;
+
+import java.util.List;
 
 /**
  * @author panhainan@yeah.net(@link http://sixteen.site)
@@ -65,4 +69,25 @@ public interface BlogService {
      * @return
      */
     boolean userCommentArticle(Comment comment);
+
+    /**
+     * 获取活跃用户
+     * @param num 数量
+     * @return
+     */
+    List<User> getActiveUser(int num);
+
+    /**
+     * 获取热门tag
+     * @return
+     */
+    List<Tag> getHotTags();
+
+    /**
+     * 通过关键字查找文章
+     * @param keyword
+     * @param pageable
+     * @return
+     */
+    Page<Article> searchArticles(String keyword, Pageable pageable);
 }

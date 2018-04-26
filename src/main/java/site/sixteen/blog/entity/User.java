@@ -93,6 +93,14 @@ public class User {
     @Column(name = "update_time")
     private Date updateTime;
 
+    public User() {
+    }
+
+    public User(String username, String nickname, String face) {
+        this.username = username;
+        this.nickname = nickname;
+        this.face = face;
+    }
 
     @Override
     public String toString() {

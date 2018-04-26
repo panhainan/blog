@@ -4,11 +4,11 @@
     <title data-th-text="${article.title}"></title>
     <div th:replace="~{fragment/common :: common}"></div>
 </head>
-<body>
+<body id="top">
 <div th:replace="~{fragment/header :: header}"></div>
 <!-- Page Content -->
 <div class="container body-container">
-    <div class="col-sm-9 index-content" id="top">
+    <div class="col-sm-9 index-content" >
         <div class="col-sm-12" style="padding: 10px 20px 20px 20px">
             <p class="h3" data-th-text="${article.title}"></p>
             <hr class="bottom-line">

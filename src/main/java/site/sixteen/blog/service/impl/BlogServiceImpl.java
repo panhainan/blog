@@ -38,14 +38,14 @@ public class BlogServiceImpl extends CommonService implements BlogService {
     @Override
     public Article getArticle(long articleId) {
         Article article = articleRepository.findOne(articleId);
-        if(article==null){
+        if (article == null) {
             return null;
         }
         //未发布状态不允许查看
         if (article.getStatus() != 1) {
             return null;
         }
-        article.setReadCount(article.getReadCount()+1);
+        article.setReadCount(article.getReadCount() + 1);
         articleRepository.save(article);
         List<Comment> commentList = commentRepository.findAllByArticleIdOrderByCreateTime(articleId);
         article.setCommentList(commentList);
@@ -67,7 +67,7 @@ public class BlogServiceImpl extends CommonService implements BlogService {
         if (tag == null) {
             return null;
         }
-        String tagStr = "%;"+tag.getId()+";%";
+        String tagStr = "%;" + tag.getId() + ";%";
         Page<Article> articlePage = articleRepository.findArticlesByTagIdStrLikeAndStatusOrderByCreateTimeDesc(tagStr, 1, pageable);
         setArticleListAssociatedInfo(articlePage.getContent());
         return articlePage;
@@ -76,10 +76,10 @@ public class BlogServiceImpl extends CommonService implements BlogService {
     @Override
     public boolean voteArticle(long id) {
         Article article = articleRepository.findOne(id);
-        if(article==null){
+        if (article == null) {
             return false;
-        }else{
-            article.setVoteCount(article.getVoteCount()+1);
+        } else {
+            article.setVoteCount(article.getVoteCount() + 1);
             articleRepository.save(article);
             return true;
         }
@@ -88,40 +88,68 @@ public class BlogServiceImpl extends CommonService implements BlogService {
     @Override
     public boolean guestCommentArticle(Comment comment) {
         Article article = articleRepository.findOne(comment.getArticleId());
-        if(article==null){
+        if (article == null) {
             return false;
-        }else{
+        } else {
             comment.setCreateTime(new Date());
             comment.setSignIn(false);
             comment.setVoteCount(0);
+            comment.setArticleName(article.getTitle());
             commentRepository.save(comment);
-            article.setCommentCount(article.getCommentCount()+1);
+            article.setCommentCount(article.getCommentCount() + 1);
             articleRepository.save(article);
             return true;
         }
     }
+
     @Override
     public boolean userCommentArticle(Comment comment) {
         Article article = articleRepository.findOne(comment.getArticleId());
-        if(article==null){
+        if (article == null) {
             return false;
-        }else{
+        } else {
             User user = getCurrentUser();
-            if(user == null){
+            if (user == null) {
                 return false;
             }
             comment.setNickname(user.getNickname());
-            //TODO 设置用户主页地址
-
+            comment.setWebsite("/u/"+user.getUsername());
             comment.setUserId(user.getId());
             comment.setSignIn(true);
             comment.setCreateTime(new Date());
             comment.setVoteCount(0);
+            comment.setArticleName(article.getTitle());
             commentRepository.save(comment);
-            article.setCommentCount(article.getCommentCount()+1);
+            article.setCommentCount(article.getCommentCount() + 1);
             articleRepository.save(article);
             return true;
         }
+    }
+
+    @Override
+    public List<User> getActiveUser(int num) {
+        return userRepository.findActiveUsers(num);
+    }
+
+    @Override
+    public List<Tag> getHotTags() {
+        //获取hot=true的tag
+        return tagRepository.findTagsByHotOrderByIdDesc(true);
+    }
+
+    @Override
+    public Page<Article> searchArticles(String keyword, Pageable pageable) {
+        String keywordLike = "%" + keyword + "%";
+        Tag tag = tagRepository.findTagByName(keyword);
+        Page<Article> articlePage;
+        if (tag == null) {
+            articlePage = articleRepository.findArticlesByTitleLikeOrSummaryLike(keywordLike, keywordLike, pageable);
+        } else {
+            String tagIdStr = "%;" + tag.getId() + ";%";
+            articlePage = articleRepository.findArticlesByTitleLikeOrSummaryLikeOrTagIdStrLike(keywordLike, keyword, tagIdStr, pageable);
+        }
+        setArticleListAssociatedInfo(articlePage.getContent());
+        return articlePage;
     }
 
 }

@@ -174,4 +174,18 @@ public interface UserService {
      * @return
      */
     List<ArticleArchiveDTO> getUserArchives(String username);
+
+    /**
+     * 获取我发表的评论
+     * @param pageable
+     * @return
+     */
+    Page<Comment> getMyComments(Pageable pageable);
+
+    /**
+     * 获取我的文章的评论
+     * @param pageable
+     * @return
+     */
+    Page<Comment> getMyArticleComments(Pageable pageable);
 }
