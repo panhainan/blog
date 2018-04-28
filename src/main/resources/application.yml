@@ -1,7 +1,7 @@
 server:
-  port: 8080
+  port: 80
 web:
-  upload-folder: F:/tmp
+  upload-folder: /tmp
   save-path: upload/user/
 
 spring:
@@ -36,16 +36,16 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        use_sql_comments: true
-        format_sql: true
-
-    show-sql: true
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        use_sql_comments: true
+#        format_sql: true
+#
+#    show-sql: true
   http:
     multipart:
-      location: F:/tmp/upload/user
+      location: /tmp/upload/user
   mvc:
     static-path-pattern: /**
   resources:
@@ -67,7 +67,7 @@ spring:
           starttls:
             nable: true
             required: true
-filterLoginUrl: /login
+
 logging:
   pattern:
     console: "%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

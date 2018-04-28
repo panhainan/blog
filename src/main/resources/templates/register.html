@@ -2,19 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>用户注册</title>
-    <div th:replace="~{fragment/common :: common}"></div>
+    <div data-th-replace="~{fragment/common :: common}"></div>
 </head>
 <body>
-<div th:replace="~{fragment/header :: header}"></div>
+<div data-th-replace="~{fragment/header :: header}"></div>
 <div class="body-container register">
-    <form th:action="@{/register}" method="POST" th:object="${userAuth}">
+    <form data-th-action="@{/register}" method="POST" data-th-object="${userAuth}">
         <h2>用户注册</h2>
         <!--下面是用户名输入框-->
         <div class="input-group">
             <span class="input-group-addon">账号</span>
             <input id="userName" name="username" type="text" class="form-control" placeholder="username"/>
         </div>
-        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></span>
+        <span data-th-if="${#fields.hasErrors('username')}" data-th-errors="*{username}" class="text-danger"></span>
         <br/>
         <!--下面是密码输入框-->
         <div class="input-group">
@@ -22,15 +22,15 @@
             <input id="password" name="password" type="password" class="form-control"
                    placeholder="password"/>
         </div>
-        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></span>
+        <span data-th-if="${#fields.hasErrors('password')}" data-th-errors="*{password}" class="text-danger"></span>
         <br/>
         <!--下面是注册按钮,包括颜色控制-->
         <button type="submit" style="width:280px;" class="btn btn-default">注 册</button>
         <br/><br/>
-        <p style="color:red" th:text="${errorMsg}"></p>
+        <p style="color:red" data-th-text="${errorMsg}"></p>
     </form>
 </div>
 
-<div th:replace="~{fragment/footer :: footer}">...</div>
+<div data-th-replace="~{fragment/footer :: footer}">...</div>
 </body>
 </html>

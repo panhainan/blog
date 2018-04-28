@@ -42,20 +42,20 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setUnauthorizedUrl("/error/403");
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         filterChainDefinitionMap.put("/logout", "logout");
-        filterChainDefinitionMap.put("/webjars/**", "anon");
-        filterChainDefinitionMap.put("/css/**", "anon");
-        filterChainDefinitionMap.put("/js/**", "anon");
-        filterChainDefinitionMap.put("/images/**", "anon");
-        filterChainDefinitionMap.put("/upload/**", "anon");
-        filterChainDefinitionMap.put("/plugin/**", "anon");
-        filterChainDefinitionMap.put("/login", "anon");
-        filterChainDefinitionMap.put("/fonts/**", "anon");
-        filterChainDefinitionMap.put("/register", "anon");
-        filterChainDefinitionMap.put("/", "anon");
-        //TODO shiro设置图片不拦截
-        filterChainDefinitionMap.put("/blog/**", "anon");
-        filterChainDefinitionMap.put("/u/**", "anon");
-        filterChainDefinitionMap.put("/**", "authc");
+//        filterChainDefinitionMap.put("/webjars/**", "anon");
+//        filterChainDefinitionMap.put("/css/**", "anon");
+//        filterChainDefinitionMap.put("/js/**", "anon");
+//        filterChainDefinitionMap.put("/images/**", "anon");
+//        filterChainDefinitionMap.put("/upload/**", "anon");
+//        filterChainDefinitionMap.put("/plugin/**", "anon");
+//        filterChainDefinitionMap.put("/login", "anon");
+//        filterChainDefinitionMap.put("/fonts/**", "anon");
+//        filterChainDefinitionMap.put("/register", "anon");
+//        filterChainDefinitionMap.put("/", "anon");
+//        filterChainDefinitionMap.put("/blog/**", "anon");
+//        filterChainDefinitionMap.put("/u/**", "anon");
+        filterChainDefinitionMap.put("/my/**", "authc");
+        filterChainDefinitionMap.put("/**", "anon");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

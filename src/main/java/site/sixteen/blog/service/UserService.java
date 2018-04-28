@@ -188,4 +188,11 @@ public interface UserService {
      * @return
      */
     Page<Comment> getMyArticleComments(Pageable pageable);
+
+    /**
+     * 删除我的评论：包括文章评论或者我发表的评论
+     * @param id
+     * @return
+     */
+    boolean deleteMyComment(Long id);
 }

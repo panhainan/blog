@@ -2,10 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <title data-th-text="${article.title}"></title>
-    <div th:replace="~{fragment/common :: common}"></div>
+    <div data-th-replace="~{fragment/common :: common}"></div>
+    <link rel="stylesheet"  data-th-href="@{/plugin/editor.md/css/editormd.min.css}" />
 </head>
 <body id="top">
-<div th:replace="~{fragment/header :: header}"></div>
+<div data-th-replace="~{fragment/header :: header}"></div>
 <!-- Page Content -->
 <div class="container body-container">
     <div class="col-sm-9 index-content" >
@@ -60,7 +61,7 @@
                 </div>
             </div>
             <hr class="bottom-line">
-            <div id="articleContentView">
+            <div id="articleContentView" style="min-height: 500px;height: auto">
                 <textarea style="display:none;" data-th-text="${article.content}"></textarea>
             </div>
             <hr class="bottom-line">
@@ -69,7 +70,7 @@
                     <!-- 打賞 -->
                     <!-- 点赞 -->
                     <li>
-                        <a id="voteBtn" style="cursor: pointer;border: 1px solid silver;padding: 15px 15px;">
+                        <a id="voteBtn" style="cursor: pointer;padding: 15px 15px;">
                             <span style="font-size: 26px;top: 6px;" class="glyphicon glyphicon-thumbs-up"></span>
                             <span style="font-size: 18px;" id="voteTxt">  点 赞 </span>
                         </a>
@@ -169,12 +170,12 @@
 </div>
 
 
-<div th:replace="~{fragment/footer :: footer}">...</div>
-<script data-th-src="@{/plugin/editor.md/editormd.js}"></script>
+<div data-th-replace="~{fragment/footer :: footer}">...</div>
+<script data-th-src="@{/plugin/editor.md/editormd.min.js}"></script>
 <script data-th-src="@{/plugin/editor.md/lib/marked.min.js}"></script>
 <script data-th-src="@{/plugin/editor.md/lib/prettify.min.js}"></script>
-<script data-th-src="@{/plugin/editor.md/lib/flowchart.min.js}"></script>
-<script data-th-src="@{/plugin/editor.md/lib/jquery.flowchart.min.js}"></script>
+<!--<script data-th-src="@{/plugin/editor.md/lib/flowchart.min.js}"></script>-->
+<!--<script data-th-src="@{/plugin/editor.md/lib/jquery.flowchart.min.js}"></script>-->
 <!--<script data-th-src="@{/plugin/editor.md/lib/sequence-diagram.min.js}"></script>-->
 <script data-th-inline="javascript">
     var commentEditormd;
@@ -226,8 +227,6 @@
             emoji: true,
             taskList: true,
             tex: true,  // 默认不解析
-            flowChart: true,  // 默认不解析
-            sequenceDiagram: false,  // 默认不解析
             codeFold: false,
             atLink: false,
             tocContainer: ".articleMenu",

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>新建文章</title>
     <div data-th-replace="~{fragment/common :: common}"></div>
+    <link rel="stylesheet"  data-th-href="@{/plugin/editor.md/css/editormd.min.css}" />
 </head>
 <body>
 <div data-th-replace="~{fragment/header :: header}"></div>
@@ -59,7 +60,7 @@
     </div>
 </div>
 <div data-th-replace="~{fragment/footer :: footer}">...</div>
-<script data-th-src="@{/plugin/editor.md/editormd.js}"></script>
+<script data-th-src="@{/plugin/editor.md/editormd.min.js}"></script>
 <script data-th-inline="javascript">
     var editor;
 
@@ -86,7 +87,7 @@
         );
     }
 
-    $(function () {
+    $(document).ready(function() {
         var article = [[${article}]];
         // console.log(article);
         if (article != null && article.tags!=null) {

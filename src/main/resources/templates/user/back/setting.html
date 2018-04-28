@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>个人中心-账户设置</title>
-    <div th:replace="~{fragment/common :: common}"></div>
+    <div data-th-replace="~{fragment/common :: common}"></div>
 </head>
 <body>
-<div th:replace="~{fragment/header :: header}"></div>
+<div data-th-replace="~{fragment/header :: header}"></div>
 <div class="body-container container" style="margin-top: 20px">
     <div class="col-sm-2 my-nav">
-        <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my-setting')}"></ul>
+        <ul data-th-replace="~{fragment/my-nav :: my-nav(activeUrl='my-setting')}"></ul>
     </div>
     <div class="col-sm-10 my-content">
         <div class="panel panel-default">
             <!-- Default panel contents -->
             <div class="panel-heading"><h4>修改密码</h4></div>
             <div class="panel-body">
-                <form action="/my/setting" class="col-sm-6" method="post" th:action="@{/my/setting}">
+                <form action="/my/setting" class="col-sm-6" method="post" data-th-action="@{/my/setting}">
                     <br>
                     <div class="input-group">
                         <span class="input-group-addon">原　密　码</span>
@@ -39,13 +39,13 @@
                     <br/>
                     <input type="submit" class="btn btn-danger" value="确认修改">
                     <br>
-                    <p style="color:red" th:text="${errorMsg}"></p>
-                    <p style="color:green" th:text="${successMsg}"></p>
+                    <p style="color:red" data-th-text="${errorMsg}"></p>
+                    <p style="color:green" data-th-text="${successMsg}"></p>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<div th:replace="~{fragment/footer :: footer}">...</div>
+<div data-th-replace="~{fragment/footer :: footer}">...</div>
 </body>
 </html>

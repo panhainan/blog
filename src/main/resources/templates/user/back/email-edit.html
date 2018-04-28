@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>个人中心-基本资料-绑定邮箱</title>
-    <div th:replace="~{fragment/common :: common}"></div>
+    <div data-th-replace="~{fragment/common :: common}"></div>
 </head>
 <body>
-<div th:replace="~{fragment/header :: header}"></div>
+<div data-th-replace="~{fragment/header :: header}"></div>
 <div class="body-container container" style="margin-top: 20px">
     <div class="col-sm-2 my-nav">
-        <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my')}"></ul>
+        <ul data-th-replace="~{fragment/my-nav :: my-nav(activeUrl='my')}"></ul>
     </div>
     <div class="col-sm-10 my-content">
         <div class="panel panel-default">
@@ -17,7 +17,7 @@
             <div class="panel-heading">绑定邮箱</div>
             <div class="panel-body">
                 <div class="col-sm-6">
-                    <form action="/my/email/valid" method="post" th:action="@{/my/email/valid}">
+                    <form action="/my/email/valid" method="post" data-th-action="@{/my/email/valid}">
                         <br>
                         <div class="input-group">
                             <span class="input-group-addon">邮箱号</span>
@@ -74,6 +74,6 @@
         }
     </script>
 </div>
-<div th:replace="~{fragment/footer :: footer}">...</div>
+<div data-th-replace="~{fragment/footer :: footer}">...</div>
 </body>
 </html>

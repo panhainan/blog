@@ -8,7 +8,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author panhainan@yeah.net(@link http://sixteen.site)
  **/
 @ControllerAdvice
-public class UserExceptionHandler {
+public class GlobalExceptionHandler {
     @ExceptionHandler({UserRegisterException.class})
     public String handleUserRegisterException(Exception e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMsg", e.getLocalizedMessage());
@@ -20,8 +20,9 @@ public class UserExceptionHandler {
         redirectAttributes.addFlashAttribute("errorMsg", e.getLocalizedMessage());
         return "redirect:/my/setting";
     }
+
     @ExceptionHandler({UserLoginException.class})
-    public String handlerUserLoginException(Exception e,RedirectAttributes redirectAttributes) {
+    public String handlerUserLoginException(Exception e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMsg", e.getLocalizedMessage());
         return "redirect:/login";
     }

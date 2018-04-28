@@ -39,4 +39,10 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
      * @return
      */
     Page<Comment> findCommentsByUserIdOrderByCreateTimeDesc(Long userId,Pageable pageable);
+
+    /**
+     * 删除对应文章ID下的所有评论
+     * @param articleId
+     */
+    void deleteCommentsByArticleId(Long articleId);
 }

@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>个人中心-基本资料</title>
-    <div th:replace="~{fragment/common :: common}"></div>
+    <div data-th-replace="~{fragment/common :: common}"></div>
 </head>
 <body>
-<div th:replace="~{fragment/header :: header}"></div>
+<div data-th-replace="~{fragment/header :: header}"></div>
 <div class="body-container container" style="margin-top: 20px">
     <div class="col-sm-2 my-nav">
-        <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my')}"></ul>
+        <ul data-th-replace="~{fragment/my-nav :: my-nav(activeUrl='my')}"></ul>
     </div>
     <div class="col-sm-10 my-content">
         <div class="panel panel-default">
@@ -21,35 +21,35 @@
                     <div class="col-sm-6">
                         <div class="input-group">
                             <span class="input-group-addon">用户名</span>
-                            <input type="text" name="username" readonly th:value="${user.username}" class="form-control"/>
+                            <input type="text" name="username" readonly data-th-value="${user.username}" class="form-control"/>
                         </div>
                         <br>
                         <div class="input-group">
                             <span class="input-group-addon">昵　称</span>
-                            <input type="text" name="nickname" th:value="${user.nickname}" class="form-control"/>
+                            <input type="text" name="nickname" data-th-value="${user.nickname}" class="form-control"/>
                         </div>
                         <br>
                         <div class="input-group">
                             <span class="input-group-addon">性　别</span>
                             <div style="border:1px solid #CCCCCC;border-radius:0 4px 4px 0;">
-                                <label>&nbsp;<input type="radio" name="gender" id="optionsRadios1" value="0" th:checked="${user.gender}==0">&nbsp;女</label>
-                            <label>&nbsp;&nbsp;&nbsp;<input type="radio" name="gender" id="optionsRadios2" value="1"  th:checked="${user.gender}==1">&nbsp;男</label>
+                                <label>&nbsp;<input type="radio" name="gender" id="optionsRadios1" value="0" data-th-checked="${user.gender}==0">&nbsp;女</label>
+                            <label>&nbsp;&nbsp;&nbsp;<input type="radio" name="gender" id="optionsRadios2" value="1"  data-th-checked="${user.gender}==1">&nbsp;男</label>
                             </div>
                         </div>
                         <br>
                         <div class="input-group">
                             <span class="input-group-addon">生　日</span>
-                            <input type="date" name="birthday"  th:field="${user.birthday}"  class="form-control"/>
+                            <input type="date" name="birthday"  data-th-field="${user.birthday}"  class="form-control"/>
                         </div>
                         <br>
                         <div class="input-group">
                             <span class="input-group-addon">手机号</span>
-                            <input  type="text" name="mobile" maxlength="16" th:value="${user.mobile}" class="form-control"/>
+                            <input  type="text" name="mobile" maxlength="16" data-th-value="${user.mobile}" class="form-control"/>
                         </div>
                         <br>
                        <!-- <div class="input-group">
                             <span class="input-group-addon">邮箱号</span>
-                            <input type="email" name="email" th:value="${user.email}" class="form-control"/>
+                            <input type="email" name="email" data-th-value="${user.email}" class="form-control"/>
                         </div>-->
                         <br>
                     </div>
@@ -61,7 +61,7 @@
                         <p style="line-height: 40px">建议上传 160px * 160px大小的图片</p>
                         <div class="input-group">
                             <span class="input-group-addon">个性签名</span>
-                            <textarea name="signature" th:text="${user.signature}" style="width: 100%;resize: none" rows="8" class="form-control"></textarea>
+                            <textarea name="signature" data-th-text="${user.signature}" style="width: 100%;resize: none" rows="8" class="form-control"></textarea>
                         </div>
                         <br>
                         <div class="col-sm-12" style="text-align: right"><input type="submit" class="btn btn-primary" value="确认修改"/></div>
@@ -71,6 +71,6 @@
         </div>
     </div>
 </div>
-<div th:replace="~{fragment/footer :: footer}">...</div>
+<div data-th-replace="~{fragment/footer :: footer}">...</div>
 </body>
 </html>

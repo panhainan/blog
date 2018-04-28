@@ -5,16 +5,14 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import site.sixteen.blog.dto.ArticleArchiveDTO;
 import site.sixteen.blog.entity.*;
 import site.sixteen.blog.enums.GenerateValidCodeResult;
+import site.sixteen.blog.enums.IdentityType;
 import site.sixteen.blog.enums.ValidCodeType;
 import site.sixteen.blog.exception.UserPasswordException;
 import site.sixteen.blog.exception.UserRegisterException;
@@ -22,8 +20,10 @@ import site.sixteen.blog.repository.*;
 import site.sixteen.blog.service.UserService;
 import site.sixteen.blog.util.StringRandom;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author panhainan@yeah.net(@link http://sixteen.site)
@@ -32,33 +32,15 @@ import java.util.*;
 @Service
 public class UserServiceImpl extends CommonService implements UserService {
 
-    private static final int IDENTITY_TYPE_PHONE = 1;
-    private static final int IDENTITY_TYPE_EMAIL = 2;
-    private static final int IDENTITY_TYPE_USERNAME = 3;
-    private static final int IDENTITY_TYPE_QQ = 4;
-    private static final int IDENTITY_TYPE_WECHAT = 5;
-    private static final int IDENTITY_TYPE_SINA = 6;
-    private static final String DEFAULT_CATEGORY_NAME="无归类文章";
 
-    /**
-     * 验证码有效时长
-     */
-    private static final long VALID_CODE_EFFECTIVE_DURATION = 1000 * 60 * 10L;
-
-    @Autowired
-    private UserAuthRepository userAuthRepository;
     @Autowired
     private UserLogRepository userLogRepository;
-    @Autowired
-    private JavaMailSender mailSender;
     @Autowired
     private UserValidRepository userValidRepository;
     @Autowired
     private ArticleRepository articleRepository;
     @Autowired
     private CommentRepository commentRepository;
-    @Value("${spring.mail.username}")
-    private String Sender;
 
 
     @Override
@@ -71,7 +53,7 @@ public class UserServiceImpl extends CommonService implements UserService {
         if (checkUsernameIsExisted(userAuth.getUsername())) {
             throw new UserRegisterException("用户名已经存在！");
         }
-        userAuth.setRegisterSource(IDENTITY_TYPE_USERNAME);
+        userAuth.setRegisterSource(IdentityType.USERNAME.value());
         userAuth.setDisabled(false);
         Date newDate = new Date();
         userAuth.setCreateTime(newDate);
@@ -79,6 +61,7 @@ public class UserServiceImpl extends CommonService implements UserService {
         userAuthRepository.save(userAuth);
         User user = new User();
         user.setUsername(userAuth.getUsername());
+        user.setNickname(user.getUsername());
         user.setCreateTime(new Date());
         userRepository.save(user);
         return 1L;
@@ -87,12 +70,10 @@ public class UserServiceImpl extends CommonService implements UserService {
     @Override
     public User getUser(String username) {
         User user = userRepository.findUserByUsername(username);
-        //TODO 隐藏敏感信息
         user.setEmail(null);
         user.setEmailBindTime(null);
         user.setMobile(null);
         user.setMobileBindTime(null);
-//        user.setUsername(null);
         user.setUpdateTime(null);
         return user;
     }
@@ -179,7 +160,7 @@ public class UserServiceImpl extends CommonService implements UserService {
         //处理标签-保存到数据库
         article.setTagIdStr(saveTags(tagIdStr));
         //处理分类
-        if (article.getCategoryId()==null|| article.getCategoryId()==0){
+        if (article.getCategoryId() == null || article.getCategoryId() == 0) {
             article.setCategoryId(getDefaultCategory(currentUser.getId()));
         }
         article.setUserId(currentUser.getId());
@@ -192,7 +173,7 @@ public class UserServiceImpl extends CommonService implements UserService {
     public Article getMyArticle(long id) {
         Article article = articleRepository.findOne(id);
         User user = getCurrentUser();
-        if(user.getId().longValue() == article.getUserId().longValue()){
+        if (user.getId().longValue() == article.getUserId().longValue()) {
             setArticleTags(article);
             return article;
         }
@@ -203,8 +184,8 @@ public class UserServiceImpl extends CommonService implements UserService {
     public boolean deleteMyArticle(long id) {
         User user = getCurrentUser();
         Article article = articleRepository.findOne(id);
-        if(user.getId().longValue()==article.getUserId().longValue()){
-            //TODO 需要将其对于的评论也删除掉，前台删除应给出提示
+        if (user.getId().longValue() == article.getUserId().longValue()) {
+            commentRepository.deleteCommentsByArticleId(id);
             articleRepository.delete(id);
             return true;
         }
@@ -219,30 +200,30 @@ public class UserServiceImpl extends CommonService implements UserService {
 
     @Override
     public List<Article> getUserCategoryArticles(String username, long categoryId) {
-        return articleRepository.findArticlesByCategoryIdAndStatus(categoryId,1);
+        return articleRepository.findArticlesByCategoryIdAndStatus(categoryId, 1);
     }
 
     @Override
     public List<ArticleArchiveDTO> getUserArchives(String username) {
         User user = userRepository.findUserByUsername(username);
-        List<Article> articles = articleRepository.findArticlesByUserIdAndStatusOrderByCreateTimeDesc(user.getId(),1);
+        List<Article> articles = articleRepository.findArticlesByUserIdAndStatusOrderByCreateTimeDesc(user.getId(), 1);
         List<ArticleArchiveDTO> articleArchiveDTOList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
-        for(Article article: articles){
+        for (Article article : articles) {
             Date createTime = article.getCreateTime();
             calendar.setTime(createTime);
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             boolean flag = false;
-            for(ArticleArchiveDTO a : articleArchiveDTOList){
-                if(a.getYear().intValue()==year && a.getMonth().intValue() ==month){
+            for (ArticleArchiveDTO a : articleArchiveDTOList) {
+                if (a.getYear()== year && a.getMonth() == month) {
                     //list中已经存在对应年月
                     a.getArticles().add(article);
                     flag = true;
                 }
             }
-            if(!flag){
-                ArticleArchiveDTO articleArchiveDTO = new ArticleArchiveDTO(year,month);
+            if (!flag) {
+                ArticleArchiveDTO articleArchiveDTO = new ArticleArchiveDTO(year, month);
                 List<Article> articles1 = new ArrayList<>();
                 articles1.add(article);
                 articleArchiveDTO.setArticles(articles1);
@@ -255,44 +236,32 @@ public class UserServiceImpl extends CommonService implements UserService {
     @Override
     public Page<Comment> getMyComments(Pageable pageable) {
         User user = getCurrentUser();
-        return commentRepository.findCommentsByUserIdOrderByCreateTimeDesc(user.getId(),pageable);
+        return commentRepository.findCommentsByUserIdOrderByCreateTimeDesc(user.getId(), pageable);
     }
 
     @Override
     public Page<Comment> getMyArticleComments(Pageable pageable) {
         User user = getCurrentUser();
-        List<Long> listIds = articleRepository.findArticleIdsByUserIdAndStatus(user.getId(),1);
-        return commentRepository.findCommentsByArticleIdIn(listIds,pageable);
-    }
-
-
-    /**
-     * 获取当前用户文章默认类别ID，不过不存在则创建
-     * @param userId 当前用户id
-     * @return 默认分类ID
-     */
-    private long getDefaultCategory(long userId){
-        Category category=categoryRepository.findCategoryByNameAndUserId(DEFAULT_CATEGORY_NAME,userId);
-        if(category==null){
-            //当前用户文章类别不存在默认类别
-            category = new Category();
-            category.setUserId(userId);
-            category.setName(DEFAULT_CATEGORY_NAME);
-            category = categoryRepository.save(category);
+        List<Long> listIds = articleRepository.findArticleIdsByUserIdAndStatus(user.getId(), 1);
+        if (listIds != null && listIds.size() > 0) {
+            return commentRepository.findCommentsByArticleIdIn(listIds, pageable);
+        } else {
+            return null;
         }
-        return category.getId();
     }
 
-
-    private void sendMailValidCode(String toEmail, String validCode, String username, Date endTime) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(Sender);
-        message.setTo(toEmail);
-        message.setSubject("博客邮箱验证邮件");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        message.setText("您好，" + username + "，您的邮箱验证码是 " + validCode + " ,请尽快激活，有效期为 " + sdf.format(endTime) + " 。\n 如果您没有进行此操作请尽快登录您的账号修改密码，如果您没有博客账号请忽略此邮件。\n 谢谢！");
-        mailSender.send(message);
+    @Override
+    public boolean deleteMyComment(Long id) {
+        User user = getCurrentUser();
+        Comment comment = commentRepository.findOne(id);
+        if (comment == null || comment.getUserId() == null || id == null || comment.getUserId().longValue() != user.getId().longValue()) {
+            return false;
+        } else {
+            commentRepository.delete(id);
+            return true;
+        }
     }
+
 
     @Override
     public GenerateValidCodeResult generateEmailValidCode(String email) {
@@ -398,8 +367,6 @@ public class UserServiceImpl extends CommonService implements UserService {
             return null;
         }
     }
-
-
 
 
 }

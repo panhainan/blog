@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title data-th-text="|${tagName} 标签|">标签</title>
-    <div th:replace="~{fragment/common :: common}"></div>
+    <div data-th-replace="~{fragment/common :: common}"></div>
 </head>
 <body>
-<div th:replace="~{fragment/header :: header}"></div>
+<div data-th-replace="~{fragment/header :: header}"></div>
 <!-- Page Content -->
 <div class="container body-container">
     <div class="col-sm-8 index-content">
@@ -66,14 +66,14 @@
 
         </div>
         <!-- Pagination -->
-        <div th:replace="~{fragment/page :: page(url='/blog/t/'+${tagName}+'?')}">...</div>
+        <div data-th-replace="~{fragment/page :: page(url='/blog/t/'+${tagName}+'?')}">...</div>
     </div>
     <!-- 右侧栏目 -->
-    <div class="col-sm-4 index-sidebar" th:insert="~{fragment/index-sidebar :: index-sidebar}">
+    <div class="col-sm-4 index-sidebar" data-th-insert="~{fragment/index-sidebar :: index-sidebar}">
     </div>
 </div>
 
 
-<div th:replace="~{fragment/footer :: footer}">...</div>
+<div data-th-replace="~{fragment/footer :: footer}">...</div>
 </body>
 </html>

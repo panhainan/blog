@@ -274,7 +274,7 @@
       }
     },
     tfoot: s,
-    th: { attrs: { colspan: null, rowspan: null, headers: null, scope: ["row", "col", "rowgroup", "colgroup"] } },
+    data-th- { attrs: { colspan: null, rowspan: null, headers: null, scope: ["row", "col", "rowgroup", "colgroup"] } },
     thead: s,
     time: { attrs: { datetime: null } },
     title: s,

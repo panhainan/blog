@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>个人中心-分类管理</title>
-    <div th:replace="~{fragment/common :: common}"></div>
+    <div data-th-replace="~{fragment/common :: common}"></div>
 </head>
 <body>
-<div th:replace="~{fragment/header :: header}"></div>
+<div data-th-replace="~{fragment/header :: header}"></div>
 <div class="body-container container" style="margin-top: 20px">
     <div class="col-sm-2 my-nav">
-        <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my-categories')}"></ul>
+        <ul data-th-replace="~{fragment/my-nav :: my-nav(activeUrl='my-categories')}"></ul>
     </div>
     <div class="col-sm-10 my-content">
         <div class="panel panel-default">
@@ -107,7 +107,7 @@
         </div>
     </div>
 </div>
-<div th:replace="~{fragment/footer :: footer}">...</div>
+<div data-th-replace="~{fragment/footer :: footer}">...</div>
 <script data-th-inline="javascript">
     function setDelete(categoryName, categoryId) {
         // console.log(categoryName + ":" + categoryId);

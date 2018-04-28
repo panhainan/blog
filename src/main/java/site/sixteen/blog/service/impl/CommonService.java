@@ -3,16 +3,30 @@ package site.sixteen.blog.service.impl;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.StringUtils;
 import site.sixteen.blog.entity.*;
 import site.sixteen.blog.repository.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
  * @author panhainan@yeah.net(@link http://sixteen.site)
  **/
 public class CommonService {
+    @Value("${spring.mail.username}")
+    private String Sender;
+    protected static final String DEFAULT_CATEGORY_NAME="无归类文章";
+    @Autowired
+    private JavaMailSender mailSender;
+    /**
+     * 验证码有效时长
+     */
+    protected static final long VALID_CODE_EFFECTIVE_DURATION = 1000 * 60 * 10L;
     @Autowired
     protected TagRepository tagRepository;
     @Autowired
@@ -20,7 +34,7 @@ public class CommonService {
     @Autowired
     protected CategoryRepository categoryRepository;
     @Autowired
-    private UserAuthRepository userAuthRepository;
+    protected UserAuthRepository userAuthRepository;
 
     protected String saveTags(String tagIdStr) {
         if (!StringUtils.isEmpty(tagIdStr)) {
@@ -31,7 +45,7 @@ public class CommonService {
                 if (!StringUtils.isEmpty(tagNameTrim)) {
                     Tag dbTag = tagRepository.findTagByName(tagNameTrim);
                     if (dbTag == null) {
-                        dbTag = tagRepository.save(new Tag(tagNameTrim));
+                        dbTag = tagRepository.save(new Tag(tagNameTrim,true));
                         stringBuilder.append(dbTag.getId()).append(";");
                     } else {
                         if (-1 == stringBuilder.indexOf(String.valueOf(dbTag.getId()))) {
@@ -113,6 +127,33 @@ public class CommonService {
 
     protected User getUserByUsername(String username) {
         return userRepository.findUserByUsername(username);
+    }
+
+    /**
+     * 获取当前用户文章默认类别ID，不过不存在则创建
+     * @param userId 当前用户id
+     * @return 默认分类ID
+     */
+    protected long getDefaultCategory(long userId){
+        Category category=categoryRepository.findCategoryByNameAndUserId(DEFAULT_CATEGORY_NAME,userId);
+        if(category==null){
+            //当前用户文章类别不存在默认类别
+            category = new Category();
+            category.setUserId(userId);
+            category.setName(DEFAULT_CATEGORY_NAME);
+            category = categoryRepository.save(category);
+        }
+        return category.getId();
+    }
+
+    protected void sendMailValidCode(String toEmail, String validCode, String username, Date endTime) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(Sender);
+        message.setTo(toEmail);
+        message.setSubject("博客邮箱验证邮件");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        message.setText("您好，" + username + "，您的邮箱验证码是 " + validCode + " ,请尽快激活，有效期为 " + sdf.format(endTime) + " 。\n 如果您没有进行此操作请尽快登录您的账号修改密码，如果您没有博客账号请忽略此邮件。\n 谢谢！");
+        mailSender.send(message);
     }
 }
 

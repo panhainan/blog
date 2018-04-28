@@ -19,8 +19,12 @@ public class Tag {
     @Column
     private Boolean hot;
 
-
     public Tag() {
+    }
+
+    public Tag(String tagName, boolean hot) {
+        this.name=tagName;
+        this.hot= hot;
     }
 
     public Tag(String tagName) {

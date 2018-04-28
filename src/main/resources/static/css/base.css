@@ -71,29 +71,31 @@ body a {
     padding-right: 0;
 }
 
-.my-nav .nav-pills > li > a {
+.my-nav .nav-pills  li  a {
     border-radius: 0px;
 }
 
-.my-nav .nav-stacked > li {
+.my-nav .nav-stacked  li {
     border-bottom: 1px solid #313640;
     text-align: center;
 }
 
-.my-nav .nav-stacked > li a {
+.my-nav .nav-stacked  li a {
     color: #ffffff;
 }
 
-.my-nav .nav-stacked > li a:hover {
+.my-nav .nav-stacked  li a:hover {
     background-color: #337AB7;
 }
-
-.my-nav .nav-stacked > li.active {
+.my-nav .nav-stacked  li a:focus {
+    background-color: #337AB7;
+}
+.my-nav .nav-stacked  li.active {
     /*background-color: #009688;*/
     background-color: #337AB7;
 }
 
-.my-nav .nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
+.my-nav .nav-pills  li.active  a, .nav-pills  li.active  a:focus, .nav-pills  li.active  a:hover {
     /*background-color: #009688;*/
     background-color: #337AB7;
 }

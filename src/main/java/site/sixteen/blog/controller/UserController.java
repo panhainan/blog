@@ -161,8 +161,7 @@ public class UserController {
     @GetMapping("/u/{username}/c/{categoryId}")
     @ResponseBody
     public List<Article> getUserCategoryArticles(@PathVariable String username,
-                                          @PathVariable long categoryId,
-                                          Model model){
+                                          @PathVariable long categoryId){
         return userService.getUserCategoryArticles(username,categoryId);
 
     }
@@ -359,6 +358,12 @@ public class UserController {
         return "user/back/comments";
     }
 
+    @PostMapping("/my/comment/delete")
+    public String deleteMyComment(Long id){
+        userService.deleteMyComment(id);
+        return  "redirect:/my/comments";
+    }
+
     @GetMapping("/my/categories")
     public String myCategories(Model model) {
         List<Category> categoryList = userService.getMyCategories();
@@ -405,12 +410,5 @@ public class UserController {
         redirectAttributes.addFlashAttribute("message", "您已安全退出");
         return "redirect:/login";
     }
-
-    @RequestMapping("/pages/403")
-    public String unauthorizedRole() {
-        log.info("------没有权限-------");
-        return "pages/403";
-    }
-
 
 }

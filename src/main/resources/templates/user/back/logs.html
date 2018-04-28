@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>个人中心-登录日志</title>
-    <div th:replace="~{fragment/common :: common}"></div>
+    <div data-th-replace="~{fragment/common :: common}"></div>
 </head>
 <body>
-<div th:replace="~{fragment/header :: header}"></div>
+<div data-th-replace="~{fragment/header :: header}"></div>
 <div class="body-container container" style="margin-top: 20px">
     <div class="col-sm-2 my-nav">
-        <ul th:replace="~{fragment/my-nav :: my-nav(activeUrl='my-logs')}"></ul>
+        <ul data-th-replace="~{fragment/my-nav :: my-nav(activeUrl='my-logs')}"></ul>
     </div>
     <div class="col-sm-10 my-content">
         <div class="panel panel-default">
             <!-- Default panel contents -->
-            <div class="panel-heading"><h4>日志记录<span style="font-size: 14px" th:text="| （共${records.totalElements}条）|"/></h4></div>
+            <div class="panel-heading"><h4>日志记录<span style="font-size: 14px" data-th-text="| （共${records.totalElements}条）|"/></h4></div>
             <div class="panel-body">
                 <div style="min-height: 410px">
                     <table class="table table-bordered table-responsive" style="text-align: center;margin-bottom: 0">
@@ -23,23 +23,23 @@
                             <td>登录IP</td>
                             <td>登录地点</td>
                         </tr>
-                        <tr th:each="log : ${records}">
-                            <td th:text="${#dates.format(log.logTime,'yyyy-MM-dd HH:mm:ss')}">
+                        <tr data-th-each="log : ${records}">
+                            <td data-th-text="${#dates.format(log.logTime,'yyyy-MM-dd HH:mm:ss')}">
                             </td>
-                            <td th:text="${log.ip}">
+                            <td data-th-text="${log.ip}">
                             </td>
-                            <td th:text="${log.address}==null?'---':${log.address}">
+                            <td data-th-text="${log.address}==null?'---':${log.address}">
                             </td>
                         </tr>
                     </table>
                 </div>
                 <!-- Pagination -->
-                <div th:replace="~{fragment/page :: page(url='/my/logs?',hide='1')}">...</div>
+                <div data-th-replace="~{fragment/page :: page(url='/my/logs?',hide='1')}">...</div>
             </div>
 
         </div>
     </div>
 </div>
-<div th:replace="~{fragment/footer :: footer}">...</div>
+<div data-th-replace="~{fragment/footer :: footer}">...</div>
 </body>
 </html>
