@@ -42,18 +42,6 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setUnauthorizedUrl("/error/403");
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         filterChainDefinitionMap.put("/logout", "logout");
-//        filterChainDefinitionMap.put("/webjars/**", "anon");
-//        filterChainDefinitionMap.put("/css/**", "anon");
-//        filterChainDefinitionMap.put("/js/**", "anon");
-//        filterChainDefinitionMap.put("/images/**", "anon");
-//        filterChainDefinitionMap.put("/upload/**", "anon");
-//        filterChainDefinitionMap.put("/plugin/**", "anon");
-//        filterChainDefinitionMap.put("/login", "anon");
-//        filterChainDefinitionMap.put("/fonts/**", "anon");
-//        filterChainDefinitionMap.put("/register", "anon");
-//        filterChainDefinitionMap.put("/", "anon");
-//        filterChainDefinitionMap.put("/blog/**", "anon");
-//        filterChainDefinitionMap.put("/u/**", "anon");
         filterChainDefinitionMap.put("/my/**", "authc");
         filterChainDefinitionMap.put("/**", "anon");
 
@@ -82,7 +70,7 @@ public class ShiroConfig {
     public UserRealm userRealm() {
         UserRealm userRealm = new UserRealm();
         //告诉realm,使用credentialsMatcher加密算法类来验证密文
-//        userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+        userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         userRealm.setCachingEnabled(false);
         return userRealm;
     }
@@ -101,7 +89,7 @@ public class ShiroConfig {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
 
         //散列算法:这里使用MD5算法;
-        hashedCredentialsMatcher.setHashAlgorithmName("md5");
+        hashedCredentialsMatcher.setHashAlgorithmName("MD5");
         //散列的次数，比如散列两次，相当于 md5(md5(""));
         hashedCredentialsMatcher.setHashIterations(2);
         //storedCredentialsHexEncoded默认是true，此时用的是密码加密用的是Hex编码；false时用Base64编码

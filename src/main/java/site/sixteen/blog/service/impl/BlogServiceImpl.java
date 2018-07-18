@@ -1,6 +1,5 @@
 package site.sixteen.blog.service.impl;
 
-import com.youbenzi.mdtool.tool.MDTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -114,7 +113,7 @@ public class BlogServiceImpl extends CommonService implements BlogService {
                 return false;
             }
             comment.setNickname(user.getNickname());
-            comment.setWebsite("/u/"+user.getUsername());
+            comment.setWebsite("/u/" + user.getUsername());
             comment.setUserId(user.getId());
             comment.setSignIn(true);
             comment.setCreateTime(new Date());

@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -92,6 +94,12 @@ public class UserController {
         }
         Subject currentSubject = SecurityUtils.getSubject();
         if (!currentSubject.isAuthenticated()) {
+//            String hashAlgorithmName = "MD5";
+//            Object credentials = userAuth.getPassword();
+//            Object salt = ByteSource.Util.bytes(userAuth.getUsername());
+//            int hashIterations = 2;
+//            Object result = new SimpleHash(hashAlgorithmName, credentials, salt, hashIterations);
+//            userAuth.setPassword(String.valueOf(result));
             UsernamePasswordToken token = new UsernamePasswordToken(userAuth.getUsername(), userAuth.getPassword());
             try {
                 // 执行登录.
@@ -121,7 +129,6 @@ public class UserController {
 
 
     /* 游客即可进行的操作 */
-
     @GetMapping({"/u/{username}","/u/{username}/blog"})
     public String getUserBlog(@PathVariable String username,
                               @RequestParam(defaultValue = "1") Integer page,

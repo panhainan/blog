@@ -5,6 +5,7 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import site.sixteen.blog.entity.UserAuth;
 import site.sixteen.blog.service.UserService;
@@ -62,10 +63,10 @@ public class UserRealm extends AuthorizingRealm {
 
         //3). realmName: 当前 realm 对象的 name. 调用父类的 getName() 方法即可
         String realmName = getName();
-        //4). 盐值. ByteSource credentialsSalt = ByteSource.Util.bytes(username);
+        //4). 盐值.
+        ByteSource credentialsSalt = ByteSource.Util.bytes(username);
 
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(principal, credentials, realmName);
-        //new SimpleAuthenticationInfo(principal, credentials, credentialsSalt, realmName);
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(principal, credentials, credentialsSalt, realmName);
 
         return info;
     }
